@@ -7,6 +7,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/run-migrations-system', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return "Migrations ran successfully: " . nl2br(\Illuminate\Support\Facades\Artisan::output());
+    } catch (\Exception $e) {
+        return "Error running migrations: " . $e->getMessage();
+    }
+});
+
 Route::get('/components/{component}/qr', [ComponentQrController::class, 'show'])
     ->name('components.qr');
 
