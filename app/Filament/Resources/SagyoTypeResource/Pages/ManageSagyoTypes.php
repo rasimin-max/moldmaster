@@ -18,6 +18,7 @@ class ManageSagyoTypes extends ManageRecords
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()
                         ->fromTable()
                         ->withNamesAsHeadings()
+                        ->ignoreFormatting()
                         ->withFilename('Template-Type-Sagyo-' . date('Y-m-d')),
                 ])
                 ->label('Export / Template')

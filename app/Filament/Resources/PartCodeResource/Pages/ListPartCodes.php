@@ -18,6 +18,7 @@ class ListPartCodes extends ListRecords
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()
                         ->fromTable()
                         ->withNamesAsHeadings()
+                        ->ignoreFormatting()
                         ->withFilename('Template-Part-Code-' . date('Y-m-d')),
                 ])
                 ->label('Export / Template')
