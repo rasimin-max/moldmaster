@@ -9,7 +9,7 @@ class JobCode extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type', 'item', 'code', 'rate'];
+    protected $fillable = ['item', 'code', 'rate'];
 
     public function sagyoNippos()
     {

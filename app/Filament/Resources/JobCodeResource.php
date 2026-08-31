@@ -23,10 +23,7 @@ class JobCodeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('type')
-                    ->label('Tipe (Misal: A. CAD / DESIGN)')
-                    ->required()
-                    ->maxLength(255),
+
                 Forms\Components\TextInput::make('item')
                     ->label('Item Pekerjaan')
                     ->required()
@@ -47,10 +44,7 @@ class JobCodeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('type')
-                    ->label('Tipe')
-                    ->searchable()
-                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('item')
                     ->label('Item Pekerjaan')
                     ->searchable(),
