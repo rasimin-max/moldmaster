@@ -17,6 +17,7 @@ class ListProjects extends ListRecords
                 ->exports([
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()
                         ->fromTable()
+                        ->withNamesAsHeadings()
                         ->withFilename('Template-Project-' . date('Y-m-d')),
                 ])
                 ->label('Export / Template')

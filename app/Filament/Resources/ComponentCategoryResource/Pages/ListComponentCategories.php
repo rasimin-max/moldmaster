@@ -17,6 +17,7 @@ class ListComponentCategories extends ListRecords
                 ->exports([
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()
                         ->fromTable()
+                        ->withNamesAsHeadings()
                         ->withFilename('Template-Bagian-' . date('Y-m-d')),
                 ])
                 ->label('Export / Template')

@@ -17,6 +17,7 @@ class ListJobCodes extends ListRecords
                 ->exports([
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()
                         ->fromTable()
+                        ->withNamesAsHeadings()
                         ->withFilename('Template-Job-Kode-' . date('Y-m-d')),
                 ])
                 ->label('Export / Template')

@@ -17,6 +17,7 @@ class ListMachineParts extends ListRecords
                 ->exports([
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()
                         ->fromTable()
+                        ->withNamesAsHeadings()
                         ->withFilename('Template-Machine-Part-' . date('Y-m-d')),
                 ])
                 ->label('Export / Template')
