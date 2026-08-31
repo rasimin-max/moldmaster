@@ -24,7 +24,19 @@ class ListComponentCategories extends ListRecords
                 ->label('Export / Template')
                 ->color('success')
                 ->icon('heroicon-o-arrow-down-tray'),
-            \EightyNine\ExcelImport\ExcelImportAction::make()->color('primary'),
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->color('primary')
+                ->processCollectionUsing(function (string $modelClass, \Illuminate\Support\Collection $collection) {
+                    foreach ($collection as $row) {
+                        $data = $row->toArray();
+                        if (isset($data['name'])) {
+                            $modelClass::updateOrCreate(['name' => $data['name']], $data);
+                        } else {
+                            $modelClass::create($data);
+                        }
+                    }
+                    return $collection;
+                }),
             Actions\CreateAction::make(),
         ];
     }
