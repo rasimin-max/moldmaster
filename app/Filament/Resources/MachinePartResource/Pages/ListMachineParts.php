@@ -13,6 +13,16 @@ class ListMachineParts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            \pxlrbt\FilamentExcel\Actions\Pages\ExportAction::make()
+                ->exports([
+                    \pxlrbt\FilamentExcel\Exports\ExcelExport::make()
+                        ->fromTable()
+                        ->withFilename('Template-Machine-Part-' . date('Y-m-d')),
+                ])
+                ->label('Export / Template')
+                ->color('success')
+                ->icon('heroicon-o-arrow-down-tray'),
+            \EightyNine\ExcelImport\ExcelImportAction::make()->color('primary'),
             Actions\CreateAction::make(),
         ];
     }
