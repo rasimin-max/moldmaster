@@ -100,7 +100,7 @@ class PurchaseOrderResource extends Resource
             Forms\Components\Section::make('Dokumen')->schema([
                 Forms\Components\FileUpload::make('invoice_file')
                     ->label('File Invoice')
-                    ->disk('public')
+
                     ->directory('purchase-orders/invoices')
                     ->nullable(),
                 Forms\Components\Textarea::make('notes')

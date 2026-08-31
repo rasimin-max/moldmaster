@@ -27,7 +27,7 @@ class MachineResource extends Resource
                     ->image()
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('4:3')
-                    ->disk('public')
+
                     ->directory('machines')
                     ->nullable()
                     ->columnSpanFull(),

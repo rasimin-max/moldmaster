@@ -86,7 +86,7 @@ class ComponentResource extends Resource
                             ->image()
                             ->imageResizeMode('cover')
                             ->imageCropAspectRatio('4:3')
-                            ->disk('public')
+
                             ->directory('components')
                             ->nullable(),
                         Forms\Components\Textarea::make('description')

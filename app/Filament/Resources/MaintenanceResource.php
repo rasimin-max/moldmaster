@@ -73,7 +73,7 @@ class MaintenanceResource extends Resource
                 Forms\Components\FileUpload::make('photo')
                     ->label('Foto Kerusakan')
                     ->image()
-                    ->disk('public')
+
                     ->directory('maintenances')
                     ->nullable(),
             ])->columns(2),

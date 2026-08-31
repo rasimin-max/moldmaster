@@ -27,7 +27,7 @@ class ToolResource extends Resource
                     ->image()
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('4:3')
-                    ->disk('public')
+
                     ->directory('tools')
                     ->nullable()
                     ->columnSpanFull(),

@@ -32,7 +32,7 @@ class MachineOperationRecordResource extends Resource
                             ->image()
                             ->imageResizeMode('cover')
                             ->imageCropAspectRatio('4:3')
-                            ->disk('public')
+
                             ->directory('operation_records')
                             ->nullable()
                             ->columnSpanFull(),

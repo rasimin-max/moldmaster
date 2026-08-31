@@ -30,7 +30,7 @@ class MoldResource extends Resource
                             ->image()
                             ->imageResizeMode('cover')
                             ->imageCropAspectRatio('4:3')
-                            ->disk('public')
+
                             ->directory('molds')
                             ->nullable()
                             ->columnSpanFull(),
