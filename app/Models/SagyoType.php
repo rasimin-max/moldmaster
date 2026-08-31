@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class SagyoType extends Model
 {
-    //
+    protected $fillable = ['name'];
 }
