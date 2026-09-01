@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\StockMovementResource\Pages;
 
 use App\Filament\Resources\StockMovementResource;
+use App\Filament\Traits\HasExcelImport;
+use App\Imports\StockMovementsImport;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Components\Tab;
@@ -10,6 +12,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ListStockMovements extends ListRecords
 {
+    use HasExcelImport;
+
     protected static string $resource = StockMovementResource::class;
 
     protected function getHeaderActions(): array
@@ -18,11 +22,8 @@ class ListStockMovements extends ListRecords
             Actions\ExportAction::make()
                 ->exporter(\App\Filament\Exports\StockMovementExporter::class)
                 ->label('Export'),
-            \EightyNine\ExcelImport\ExcelImportAction::make()
-                ->use(\App\Imports\StockMovementsImport::class)
-                ->color('primary')
-                ->label('Import'),
-            Actions\CreateAction::make()->label('+ Input Transaksi')
+            $this->makeImportAction('Import', StockMovementsImport::class, 'Import Transaksi Stok'),
+            Actions\CreateAction::make()->label('+ Input Transaksi'),
         ];
     }
 
