@@ -77,8 +77,12 @@ class MachinesImport implements OnEachRow, WithHeadingRow, WithEvents
             $data['year_purchased'] = null;
         }
 
-        $existingMachine = Machine::where('code', $code)->first();
+        $existingMachine = Machine::withTrashed()->where('code', $code)->first();
         if ($existingMachine) {
+            if ($existingMachine->trashed()) {
+                $existingMachine->restore();
+            }
+            
             $existingMachine->fill($data);
             
             if ($existingMachine->isDirty()) {
@@ -93,7 +97,7 @@ class MachinesImport implements OnEachRow, WithHeadingRow, WithEvents
         try {
             Machine::create(array_merge(['code' => $code], $data));
         } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->errorInfo[1] == 1062) {
+            if ($e->errorInfo[1] == 1062 || $e->errorInfo[0] === '23505') {
                 $this->skippedCount++;
                 return;
             }

@@ -64,8 +64,12 @@ class ToolsImport implements OnEachRow, WithHeadingRow, WithEvents
             'description' => trim($row['deskripsi'] ?? null),
         ];
 
-        $existingTool = Tool::where('code', $code)->first();
+        $existingTool = Tool::withTrashed()->where('code', $code)->first();
         if ($existingTool) {
+            if ($existingTool->trashed()) {
+                $existingTool->restore();
+            }
+            
             $existingTool->fill($data);
             
             if ($existingTool->isDirty()) {
@@ -80,7 +84,7 @@ class ToolsImport implements OnEachRow, WithHeadingRow, WithEvents
         try {
             Tool::create(array_merge(['code' => $code], $data));
         } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->errorInfo[1] == 1062) {
+            if ($e->errorInfo[1] == 1062 || $e->errorInfo[0] === '23505') {
                 $this->skippedCount++;
                 return;
             }

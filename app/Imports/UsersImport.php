@@ -78,7 +78,7 @@ class UsersImport implements OnEachRow, WithHeadingRow, WithEvents
             $data['password'] = Hash::make(trim($row['password'] ?? 'password123'));
             User::create($data);
         } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->errorInfo[1] == 1062) {
+            if ($e->errorInfo[1] == 1062 || $e->errorInfo[0] === '23505') {
                 $this->skippedCount++;
                 return;
             }

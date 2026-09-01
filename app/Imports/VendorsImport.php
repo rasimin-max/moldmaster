@@ -59,8 +59,12 @@ class VendorsImport implements OnEachRow, WithHeadingRow, WithEvents
             'notes' => trim($row['notes'] ?? ($row['catatan'] ?? null)),
         ];
 
-        $existing = Vendor::where('code', $code)->first();
+        $existing = Vendor::withTrashed()->where('code', $code)->first();
         if ($existing) {
+            if ($existing->trashed()) {
+                $existing->restore();
+            }
+            
             $existing->fill($data);
             
             if ($existing->isDirty()) {
@@ -75,7 +79,7 @@ class VendorsImport implements OnEachRow, WithHeadingRow, WithEvents
         try {
             Vendor::create(array_merge(['code' => $code], $data));
         } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->errorInfo[1] == 1062) {
+            if ($e->errorInfo[1] == 1062 || $e->errorInfo[0] === '23505') {
                 $this->skippedCount++;
                 return;
             }
