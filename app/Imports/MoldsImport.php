@@ -4,18 +4,19 @@ namespace App\Imports;
 
 use App\Models\Mold;
 use App\Models\Project;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\OnEachRow;
+use Maatwebsite\Excel\Row;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class MoldsImport implements ToModel, WithHeadingRow
+class MoldsImport implements OnEachRow, WithHeadingRow
 {
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
+    * @param Row $rowObj
     */
-    public function model(array $row)
+    public function onRow(Row $rowObj)
     {
+        $row = $rowObj->toArray();
+
         $projectId = null;
         $projectCode = trim($row['project_code'] ?? ($row['kode_project'] ?? ''));
         if (!empty($projectCode)) {
@@ -43,10 +44,9 @@ class MoldsImport implements ToModel, WithHeadingRow
             default => 'active',
         };
 
-        return new Mold([
+        $data = [
             'mold_number'  => trim($row['mold_number'] ?? ($row['nomor_mold'] ?? ($row['no_mold'] ?? null))),
             'project_id'   => $projectId,
-            'code'         => $code,
             'name'         => $name,
             'project_name' => trim($row['project_name'] ?? ($row['nama_project'] ?? null)),
             'customer'     => trim($row['customer'] ?? null),
@@ -56,6 +56,14 @@ class MoldsImport implements ToModel, WithHeadingRow
             'current_shot' => (int) trim($row['current_shot'] ?? ($row['shot_saat_ini'] ?? ($row['shot'] ?? 0))),
             'status'       => $status,
             'description'  => trim($row['description'] ?? ($row['deskripsi'] ?? null)),
-        ]);
+        ];
+
+        $mold = Mold::where('code', $code)->first();
+        if ($mold) {
+            $mold->update($data);
+        } else {
+            $data['code'] = $code;
+            Mold::create($data);
+        }
     }
 }
