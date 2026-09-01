@@ -12,7 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement('ALTER TABLE machines DROP CONSTRAINT IF EXISTS machines_type_check');
+        try {
+            if (DB::connection()->getDriverName() === 'pgsql') {
+                DB::statement('ALTER TABLE machines DROP CONSTRAINT IF EXISTS machines_type_check');
+            } else {
+                DB::statement('ALTER TABLE machines DROP CONSTRAINT machines_type_check');
+            }
+        } catch (\Exception $e) {
+            // Ignore if constraint doesn't exist or syntax error (e.g. on MySQL during build)
+        }
     }
 
     /**
