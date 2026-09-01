@@ -17,26 +17,37 @@ class MoldsImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $projectId = null;
-        if (!empty($row['project_code'])) {
-            $project = Project::where('code', $row['project_code'])->first();
+        $projectCode = trim($row['project_code'] ?? ($row['kode_project'] ?? ''));
+        if (!empty($projectCode)) {
+            $project = Project::where('code', $projectCode)->first();
             if ($project) {
                 $projectId = $project->id;
             }
         }
 
+        $code = trim($row['code'] ?? ($row['kode'] ?? ($row['kode_mold'] ?? '')));
+        if (empty($code)) {
+            $code = 'MOL-' . date('Y') . '-' . strtoupper(\Illuminate\Support\Str::random(4));
+        }
+        
+        $name = trim($row['name'] ?? ($row['nama_mold'] ?? ($row['nama'] ?? '')));
+        if (empty($name)) {
+            $name = 'Mold ' . $code;
+        }
+
         return new Mold([
-            'mold_number'  => $row['mold_number'] ?? null,
+            'mold_number'  => trim($row['mold_number'] ?? ($row['nomor_mold'] ?? ($row['no_mold'] ?? null))),
             'project_id'   => $projectId,
-            'code'         => $row['code'] ?? null,
-            'name'         => $row['name'] ?? null,
-            'project_name' => $row['project_name'] ?? null,
-            'customer'     => $row['customer'] ?? null,
-            'product_type' => $row['product_type'] ?? null,
-            'cavity'       => $row['cavity'] ?? null,
-            'shot_life'    => $row['shot_life'] ?? 0,
-            'current_shot' => $row['current_shot'] ?? 0,
-            'status'       => $row['status'] ?? 'active',
-            'description'  => $row['description'] ?? null,
+            'code'         => $code,
+            'name'         => $name,
+            'project_name' => trim($row['project_name'] ?? ($row['nama_project'] ?? null)),
+            'customer'     => trim($row['customer'] ?? null),
+            'product_type' => trim($row['product_type'] ?? ($row['produk'] ?? ($row['jenis_produk'] ?? null))),
+            'cavity'       => (int) trim($row['cavity'] ?? ($row['kaviti'] ?? 1)),
+            'shot_life'    => (int) trim($row['shot_life'] ?? ($row['target_shot'] ?? 0)),
+            'current_shot' => (int) trim($row['current_shot'] ?? ($row['shot_saat_ini'] ?? ($row['shot'] ?? 0))),
+            'status'       => trim($row['status'] ?? 'active'),
+            'description'  => trim($row['description'] ?? ($row['deskripsi'] ?? null)),
         ]);
     }
 }
