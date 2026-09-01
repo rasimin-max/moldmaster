@@ -3,8 +3,13 @@
 namespace App\Filament\Resources\ProjectResource\Pages;
 
 use App\Filament\Resources\ProjectResource;
+use App\Imports\ProjectsImport;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Notifications\Notification;
+use Maatwebsite\Excel\Facades\Excel;
+use Filament\Forms\Components\FileUpload;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ListProjects extends ListRecords
 {
@@ -24,19 +29,37 @@ class ListProjects extends ListRecords
                 ->label('Export / Template')
                 ->color('success')
                 ->icon('heroicon-o-arrow-down-tray'),
-            \EightyNine\ExcelImport\ExcelImportAction::make()
+            Actions\Action::make('import')
+                ->label('Import')
+                ->icon('heroicon-o-arrow-up-tray')
                 ->color('primary')
-                ->processCollectionUsing(function (string $modelClass, \Illuminate\Support\Collection $collection) {
-                    foreach ($collection as $row) {
-                        $data = $row->toArray();
-                        if (isset($data['code'])) {
-                            $modelClass::updateOrCreate(['code' => $data['code']], $data);
-                        } else {
-                            $modelClass::create($data);
-                        }
+                ->form([
+                    FileUpload::make('file')
+                        ->label('Projects Excel Data')
+                        ->acceptedFileTypes([
+                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                            'application/vnd.ms-excel',
+                        ])
+                        ->required(),
+                ])
+                ->action(function (array $data) {
+                    $file = $data['file'];
+                    if ($file instanceof TemporaryUploadedFile) {
+                        $path = $file->getRealPath();
+                    } else {
+                        $path = storage_path('app/public/' . $file);
                     }
-                    return $collection;
-                }),
+                    $importer = new ProjectsImport();
+                    Excel::import($importer, $path);
+                    Notification::make()
+                        ->title('Import Selesai')
+                        ->body("Berhasil: {$importer->importedCount} | Diperbarui: {$importer->updatedCount} | Dilewati: {$importer->skippedCount}")
+                        ->success()
+                        ->send();
+                })
+                ->modalHeading('Import Excel')
+                ->modalDescription('Import data into database from Excel file')
+                ->modalSubmitActionLabel('Submit'),
             Actions\CreateAction::make(),
         ];
     }
