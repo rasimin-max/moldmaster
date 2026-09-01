@@ -14,6 +14,7 @@ class ListUsers extends ListRecords
     protected function getHeaderActions(): array {
         return [
             \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->use(\App\Imports\UsersImport::class)
                 ->color('primary')
                 ->label('Import User'),
             Actions\ExportAction::make()

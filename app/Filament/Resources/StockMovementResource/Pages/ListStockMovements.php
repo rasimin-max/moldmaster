@@ -19,6 +19,7 @@ class ListStockMovements extends ListRecords
                 ->exporter(\App\Filament\Exports\StockMovementExporter::class)
                 ->label('Export'),
             \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->use(\App\Imports\StockMovementsImport::class)
                 ->color('primary')
                 ->label('Import'),
             Actions\CreateAction::make()->label('+ Input Transaksi')

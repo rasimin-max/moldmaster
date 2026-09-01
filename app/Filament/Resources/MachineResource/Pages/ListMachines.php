@@ -20,6 +20,7 @@ class ListMachines extends ListRecords
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()->fromTable(),
                 ]),
             \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->use(\App\Imports\MachinesImport::class)
                 ->color('primary'),
             Actions\CreateAction::make()->label('+ Tambah Mesin')
         ];
