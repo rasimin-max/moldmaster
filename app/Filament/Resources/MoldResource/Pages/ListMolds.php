@@ -19,10 +19,11 @@ class ListMolds extends ListRecords
                 ->exports([
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()->fromTable(),
                 ]),
-            \Filament\Actions\ImportAction::make()
-                ->importer(\App\Filament\Imports\MoldImporter::class)
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->use(\App\Imports\MoldsImport::class)
                 ->color('warning')
-                ->icon('heroicon-o-arrow-up-tray'),
+                ->modalHeading('Import Molds (Excel)')
+                ->label('Import Excel'),
             Actions\CreateAction::make()->label('+ Tambah Mold')
         ];
     }
