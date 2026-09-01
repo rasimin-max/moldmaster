@@ -16,6 +16,15 @@ Route::get('/run-migrations-system', function () {
     }
 });
 
+Route::get('/force-drop-constraint', function () {
+    try {
+        \Illuminate\Support\Facades\DB::statement('ALTER TABLE machines DROP CONSTRAINT IF EXISTS machines_type_check');
+        return "Constraint dropped successfully!";
+    } catch (\Exception $e) {
+        return "Error dropping constraint: " . $e->getMessage();
+    }
+});
+
 Route::get('/components/{component}/qr', [ComponentQrController::class, 'show'])
     ->name('components.qr');
 
