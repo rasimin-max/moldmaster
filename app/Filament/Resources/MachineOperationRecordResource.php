@@ -29,6 +29,7 @@ class MachineOperationRecordResource extends Resource
                 Forms\Components\Section::make('Photo & Notes')
                     ->schema([
                         Forms\Components\FileUpload::make('photo')
+                    ->disk('cloudinary')
                             ->image()
                             ->imageResizeMode('cover')
                             ->imageCropAspectRatio('4:3')

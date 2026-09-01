@@ -82,6 +82,7 @@ class ComponentResource extends Resource
 
                     Forms\Components\Section::make('Media & Catatan')->schema([
                         Forms\Components\FileUpload::make('photo')
+                    ->disk('cloudinary')
                             ->label('Foto Komponen')
                             ->image()
                             ->imageResizeMode('cover')

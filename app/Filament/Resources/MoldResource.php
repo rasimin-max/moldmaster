@@ -26,6 +26,7 @@ class MoldResource extends Resource
                 Forms\Components\Group::make()->schema([
                     Forms\Components\Section::make('Informasi Utama')->schema([
                         Forms\Components\FileUpload::make('photo')
+                    ->disk('cloudinary')
                             ->label('Foto Mold')
                             ->image()
                             ->imageResizeMode('cover')

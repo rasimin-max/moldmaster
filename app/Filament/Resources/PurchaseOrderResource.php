@@ -99,6 +99,7 @@ class PurchaseOrderResource extends Resource
 
             Forms\Components\Section::make('Dokumen')->schema([
                 Forms\Components\FileUpload::make('invoice_file')
+                    ->disk('cloudinary')
                     ->label('File Invoice')
 
                     ->directory('purchase-orders/invoices')

@@ -23,6 +23,7 @@ class MachineResource extends Resource
         return $form->schema([
             Forms\Components\Section::make()->schema([
                 Forms\Components\FileUpload::make('photo')
+                    ->disk('cloudinary')
                     ->label('Foto Mesin')
                     ->image()
                     ->imageResizeMode('cover')

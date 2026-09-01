@@ -71,6 +71,7 @@ class MaintenanceResource extends Resource
                     ->rows(3)
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('photo')
+                    ->disk('cloudinary')
                     ->label('Foto Kerusakan')
                     ->image()
 

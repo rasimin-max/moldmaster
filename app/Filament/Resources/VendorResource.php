@@ -23,6 +23,7 @@ class VendorResource extends Resource
         return $form->schema([
             Forms\Components\Section::make()->schema([
                 Forms\Components\FileUpload::make('photo')
+                    ->disk('cloudinary')
                     ->label('Foto / Logo')
                     ->image()
                     ->imageResizeMode('cover')

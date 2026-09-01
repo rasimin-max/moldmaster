@@ -39,6 +39,7 @@ class SagyoNippoResource extends Resource
                             ->default(now())
                             ->required(),
                         Forms\Components\FileUpload::make('photo')
+                    ->disk('cloudinary')
                             ->label('Bukti Foto / Laporan')
                             ->image()
                             ->directory('sagyo-nippo')

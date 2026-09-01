@@ -23,6 +23,7 @@ class ToolResource extends Resource
         return $form->schema([
             Forms\Components\Section::make()->schema([
                 Forms\Components\FileUpload::make('photo')
+                    ->disk('cloudinary')
                     ->label('Foto Alat')
                     ->image()
                     ->imageResizeMode('cover')

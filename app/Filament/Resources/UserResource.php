@@ -67,7 +67,8 @@ class UserResource extends Resource
                     ->numeric()
                     ->default(0)
                     ->prefix('Rp'),
-                Forms\Components\FileUpload::make('avatar')->label('Foto')->image()->directory('avatars')->nullable(),
+                Forms\Components\FileUpload::make('avatar')
+                    ->disk('cloudinary')->label('Foto')->image()->directory('avatars')->nullable(),
             ])->columns(2),
         ]);
     }
