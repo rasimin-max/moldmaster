@@ -60,9 +60,9 @@ class MachinesImport implements OnEachRow, WithHeadingRow, WithEvents
         };
 
         $data = [
-            'name' => trim($row['name'] ?? ($row['nama'] ?? 'Unknown Machine')),
+            'name' => trim($row['name'] ?? ($row['nama_mesin'] ?? ($row['nama'] ?? 'Unknown Machine'))),
             'type' => trim($row['type'] ?? ($row['tipe'] ?? null)),
-            'brand' => trim($row['brand'] ?? ($row['merek'] ?? null)),
+            'brand' => trim($row['brand'] ?? ($row['merk'] ?? ($row['merek'] ?? null))),
             'model_number' => trim($row['model_number'] ?? ($row['model'] ?? null)),
             'serial_number' => trim($row['serial_number'] ?? ($row['serial'] ?? null)),
             'area' => trim($row['area'] ?? null),
