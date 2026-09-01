@@ -34,7 +34,7 @@ class MachineResource extends Resource
                 Forms\Components\TextInput::make('code')->label('Kode Mesin')->required()->unique(ignoreRecord: true)->placeholder('CNC-001'),
                 Forms\Components\TextInput::make('name')->label('Nama Mesin')->required(),
                 Forms\Components\Select::make('type')->label('Jenis Mesin')
-                    ->options(['CNC' => 'CNC', 'EDM' => 'EDM', 'Wirecut' => 'Wire Cut', 'Grinding' => 'Grinding', 'Milling' => 'Milling', 'Lathe' => 'Lathe', 'Drilling' => 'Drilling', 'Polishing' => 'Polishing', 'Assembly' => 'Assembly', 'Laser' => 'Laser'])
+                    ->options(['CNC' => 'CNC', 'EDM' => 'EDM', 'Wirecut' => 'Wire Cut', 'Grinding' => 'Grinding', 'Milling' => 'Milling', 'Lathe' => 'Lathe', 'Drilling' => 'Drilling', 'Polishing' => 'Polishing', 'Assembly' => 'Assembly', 'Laser' => 'Laser', 'Software' => 'Software'])
                     ->required(),
                 Forms\Components\TextInput::make('brand')->label('Merk/Brand')->nullable(),
                 Forms\Components\TextInput::make('model_number')->label('Model Number')->nullable(),
@@ -56,7 +56,7 @@ class MachineResource extends Resource
             Tables\Columns\ViewColumn::make('photo')->label('Foto')->view('filament.tables.columns.hover-image'),
             Tables\Columns\TextColumn::make('code')->label('Kode')->searchable()->sortable()->weight('bold'),
             Tables\Columns\TextColumn::make('name')->label('Nama Mesin')->searchable()->sortable(),
-            Tables\Columns\BadgeColumn::make('type')->colors(['primary' => 'CNC', 'warning' => 'EDM', 'info' => 'Wirecut', 'success' => 'Grinding']),
+            Tables\Columns\BadgeColumn::make('type')->colors(['primary' => 'CNC', 'warning' => 'EDM', 'info' => 'Wirecut', 'success' => 'Grinding', 'secondary' => 'Software']),
             Tables\Columns\TextColumn::make('brand')->label('Merk'),
             Tables\Columns\TextColumn::make('area')->label('Area')->badge()->color('indigo'),
             Tables\Columns\BadgeColumn::make('status')
@@ -81,7 +81,7 @@ class MachineResource extends Resource
             ]),
         ])
         ->filters([
-            Tables\Filters\SelectFilter::make('type')->options(['CNC' => 'CNC', 'EDM' => 'EDM', 'Wirecut' => 'Wire Cut', 'Grinding' => 'Grinding']),
+            Tables\Filters\SelectFilter::make('type')->options(['CNC' => 'CNC', 'EDM' => 'EDM', 'Wirecut' => 'Wire Cut', 'Grinding' => 'Grinding', 'Software' => 'Software']),
             Tables\Filters\SelectFilter::make('status')->options(['operational' => 'Operasional', 'maintenance' => 'Maintenance', 'breakdown' => 'Breakdown']),
         ])
         ->defaultSort('code');
