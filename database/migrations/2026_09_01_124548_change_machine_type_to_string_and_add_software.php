@@ -12,7 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('machines', function (Blueprint $table) {
-            $table->string('type', 50)->change();
+            try {
+                $table->string('type', 50)->change();
+            } catch (\Exception $e) {
+                // Ignore if it fails due to Postgres enum to varchar casting issues
+                // the subsequent migration will manually drop the check constraint.
+            }
         });
     }
 
