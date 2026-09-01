@@ -15,8 +15,8 @@ class ListToolLoans extends ListRecords
             Actions\ExportAction::make()
                 ->exporter(\App\Filament\Exports\ToolLoanExporter::class)
                 ->label('Export'),
-            Actions\ImportAction::make()
-                ->importer(\App\Filament\Imports\ToolLoanImporter::class)
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->color('primary')
                 ->label('Import'),
             Actions\CreateAction::make()->label('+ Pinjam Alat')
         ];

@@ -19,10 +19,8 @@ class ListVendors extends ListRecords
                 ->exports([
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()->fromTable(),
                 ]),
-            \Filament\Actions\ImportAction::make()
-                ->importer(\App\Filament\Imports\VendorImporter::class)
-                ->color('warning')
-                ->icon('heroicon-o-arrow-up-tray'),
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->color('primary'),
             Actions\CreateAction::make()->label('+ Tambah Supplier')
         ];
     }

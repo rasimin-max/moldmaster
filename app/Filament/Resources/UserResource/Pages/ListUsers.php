@@ -13,8 +13,8 @@ class ListUsers extends ListRecords
     protected static string $resource = UserResource::class;
     protected function getHeaderActions(): array {
         return [
-            Actions\ImportAction::make()
-                ->importer(UserImporter::class)
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->color('primary')
                 ->label('Import User'),
             Actions\ExportAction::make()
                 ->exporter(UserExporter::class)
