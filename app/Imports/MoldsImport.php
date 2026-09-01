@@ -35,6 +35,14 @@ class MoldsImport implements ToModel, WithHeadingRow
             $name = 'Mold ' . $code;
         }
 
+        $statusStr = strtolower(trim($row['status'] ?? 'active'));
+        $status = match(true) {
+            str_contains($statusStr, 'non') || str_contains($statusStr, 'inactive') => 'inactive',
+            str_contains($statusStr, 'maintenance') || str_contains($statusStr, 'perawatan') || str_contains($statusStr, 'rusak') => 'maintenance',
+            str_contains($statusStr, 'pensiun') || str_contains($statusStr, 'retired') => 'retired',
+            default => 'active',
+        };
+
         return new Mold([
             'mold_number'  => trim($row['mold_number'] ?? ($row['nomor_mold'] ?? ($row['no_mold'] ?? null))),
             'project_id'   => $projectId,
@@ -46,7 +54,7 @@ class MoldsImport implements ToModel, WithHeadingRow
             'cavity'       => (int) trim($row['cavity'] ?? ($row['kaviti'] ?? 1)),
             'shot_life'    => (int) trim($row['shot_life'] ?? ($row['target_shot'] ?? 0)),
             'current_shot' => (int) trim($row['current_shot'] ?? ($row['shot_saat_ini'] ?? ($row['shot'] ?? 0))),
-            'status'       => trim($row['status'] ?? 'active'),
+            'status'       => $status,
             'description'  => trim($row['description'] ?? ($row['deskripsi'] ?? null)),
         ]);
     }
