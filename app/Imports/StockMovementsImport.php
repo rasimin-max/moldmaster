@@ -51,6 +51,14 @@ class StockMovementsImport implements OnEachRow, WithHeadingRow, WithEvents
             return;
         }
 
+        $statusStr = strtolower(trim($row['status'] ?? 'pending'));
+        $status = match(true) {
+            str_contains($statusStr, 'approve') || str_contains($statusStr, 'setuju') => 'approved',
+            str_contains($statusStr, 'reject') || str_contains($statusStr, 'tolak') => 'rejected',
+            str_contains($statusStr, 'cancel') || str_contains($statusStr, 'batal') => 'cancelled',
+            default => 'pending',
+        };
+
         try {
             StockMovement::create([
                 'item_type' => $itemType,
@@ -61,7 +69,7 @@ class StockMovementsImport implements OnEachRow, WithHeadingRow, WithEvents
                 'reference_number' => trim($row['reference_number'] ?? ($row['referensi'] ?? null)),
                 'user_id' => $row['user_id'] ?? null,
                 'notes' => trim($row['notes'] ?? ($row['catatan'] ?? null)),
-                'status' => trim($row['status'] ?? 'pending'),
+                'status' => $status,
             ]);
             $this->importedCount++;
         } catch (\Exception $e) {

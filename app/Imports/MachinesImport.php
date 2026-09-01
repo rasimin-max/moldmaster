@@ -50,6 +50,15 @@ class MachinesImport implements OnEachRow, WithHeadingRow, WithEvents
             return;
         }
 
+        $statusStr = strtolower(trim($row['status'] ?? 'operational'));
+        $status = match(true) {
+            str_contains($statusStr, 'maintenance') || str_contains($statusStr, 'perbaikan') => 'maintenance',
+            str_contains($statusStr, 'breakdown') || str_contains($statusStr, 'rusak') => 'breakdown',
+            str_contains($statusStr, 'idle') || str_contains($statusStr, 'diam') => 'idle',
+            str_contains($statusStr, 'retired') || str_contains($statusStr, 'pensiun') => 'retired',
+            default => 'operational',
+        };
+
         $data = [
             'name' => trim($row['name'] ?? ($row['nama'] ?? 'Unknown Machine')),
             'type' => trim($row['type'] ?? ($row['tipe'] ?? null)),
@@ -58,7 +67,7 @@ class MachinesImport implements OnEachRow, WithHeadingRow, WithEvents
             'serial_number' => trim($row['serial_number'] ?? ($row['serial'] ?? null)),
             'area' => trim($row['area'] ?? null),
             'year_purchased' => trim($row['year_purchased'] ?? ($row['tahun'] ?? null)),
-            'status' => trim($row['status'] ?? 'Operational'),
+            'status' => $status,
             'hourly_rate' => (float)($row['hourly_rate'] ?? ($row['rate'] ?? 0)),
             'notes' => trim($row['notes'] ?? ($row['catatan'] ?? null)),
         ];

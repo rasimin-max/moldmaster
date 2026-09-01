@@ -52,12 +52,22 @@ class ToolLoansImport implements OnEachRow, WithHeadingRow, WithEvents
             return;
         }
 
+        $statusStr = strtolower(trim($row['status'] ?? 'borrowed'));
+        $status = match(true) {
+            str_contains($statusStr, 'pending') || str_contains($statusStr, 'tunda') => 'pending',
+            str_contains($statusStr, 'approve') || str_contains($statusStr, 'setuju') => 'approved',
+            str_contains($statusStr, 'return') || str_contains($statusStr, 'kembali') => 'returned',
+            str_contains($statusStr, 'reject') || str_contains($statusStr, 'tolak') => 'rejected',
+            str_contains($statusStr, 'overdue') || str_contains($statusStr, 'telat') => 'overdue',
+            default => 'borrowed',
+        };
+
         try {
             ToolLoan::create([
                 'tool_id' => $toolId,
                 'user_id' => $userId,
                 'quantity' => (int)($row['quantity'] ?? ($row['jumlah'] ?? 1)),
-                'status' => trim($row['status'] ?? 'borrowed'),
+                'status' => $status,
                 'loan_date' => !empty($row['loan_date']) ? Carbon::parse($row['loan_date']) : now(),
                 'return_date' => !empty($row['return_date']) ? Carbon::parse($row['return_date']) : null,
                 'notes' => trim($row['notes'] ?? ($row['catatan'] ?? null)),
