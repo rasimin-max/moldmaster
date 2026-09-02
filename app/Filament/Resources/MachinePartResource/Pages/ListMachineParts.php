@@ -17,7 +17,6 @@ class ListMachineParts extends ListRecords
                 ->exports([
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()
                         ->fromTable()
-                        ->withNamesAsHeadings()
                         ->ignoreFormatting()
                         ->withFilename('Template-Machine-Part-' . date('Y-m-d')),
                 ])
@@ -49,7 +48,7 @@ class ListMachineParts extends ListRecords
                         
                         // Try to find machine by name or code if machine_id is not provided
                         if (empty($machineId)) {
-                            $machineRef = $data['machine'] ?? $data['machine_name'] ?? $data['mesin'] ?? $data['nama_mesin'] ?? null;
+                            $machineRef = $data['machine'] ?? $data['machine_name'] ?? $data['machinename'] ?? $data['mesin'] ?? $data['nama_mesin'] ?? null;
                             if ($machineRef) {
                                 $machineRef = trim((string)$machineRef);
                                 $machine = \App\Models\Machine::where('name', 'like', "%{$machineRef}%")
