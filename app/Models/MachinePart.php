@@ -16,6 +16,7 @@ class MachinePart extends Model
         'machine_id',
         'name',
         'part_number',
+        'image',
         'installed_at',
         'expected_life_hours',
         'expected_life_cycles',

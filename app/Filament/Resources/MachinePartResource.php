@@ -33,6 +33,10 @@ class MachinePartResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('part_number')
                     ->maxLength(255),
+                Forms\Components\FileUpload::make('image')
+                    ->image()
+                    ->directory('machine-parts')
+                    ->columnSpanFull(),
                 Forms\Components\DatePicker::make('installed_at')
                     ->default(now()),
                 Forms\Components\TextInput::make('expected_life_hours')
@@ -54,6 +58,8 @@ class MachinePartResource extends Resource
                 Tables\Columns\TextColumn::make('machine.name')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('part_number')
