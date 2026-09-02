@@ -8,9 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Panggil command shield untuk memastikan semua permission baru dari HasPageShield tergenerate
-        \Illuminate\Support\Facades\Artisan::call('shield:generate', ['--all' => true]);
-
         // Permission yang SEHARUSNYA untuk operator (sesuai gambar Menu Operator)
         $permissions = [
             'page_SagyoNippoEntryPage',          // Sagyo Nippo
