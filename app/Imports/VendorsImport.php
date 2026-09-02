@@ -50,11 +50,30 @@ class VendorsImport implements OnEachRow, WithHeadingRow, WithEvents
             return;
         }
 
+        $name = 'Unknown Vendor';
+        $contactPerson = null;
+        $phone = null;
+        
+        foreach ($row as $key => $value) {
+            $keyStr = strtolower(str_replace([' ', '_'], '', (string) $key));
+            $valStr = trim((string) $value);
+            
+            if (str_contains($keyStr, 'name') || str_contains($keyStr, 'namasupplier') || $keyStr === 'nama') {
+                if (!empty($valStr)) $name = $valStr;
+            }
+            if (str_contains($keyStr, 'contact') || str_contains($keyStr, 'kontak') || str_contains($keyStr, 'pic')) {
+                if (!empty($valStr)) $contactPerson = $valStr;
+            }
+            if (str_contains($keyStr, 'phone') || str_contains($keyStr, 'telepon') || str_contains($keyStr, 'telp')) {
+                if (!empty($valStr)) $phone = $valStr;
+            }
+        }
+
         $data = [
-            'name' => trim($row['name'] ?? ($row['nama'] ?? 'Unknown Vendor')),
-            'contact_person' => trim($row['contact_person'] ?? ($row['kontak'] ?? null)),
+            'name' => $name ?: 'Unknown Vendor',
+            'contact_person' => $contactPerson,
             'email' => trim($row['email'] ?? null),
-            'phone' => trim($row['phone'] ?? ($row['telepon'] ?? null)),
+            'phone' => $phone,
             'address' => trim($row['address'] ?? ($row['alamat'] ?? null)),
             'notes' => trim($row['notes'] ?? ($row['catatan'] ?? null)),
         ];
