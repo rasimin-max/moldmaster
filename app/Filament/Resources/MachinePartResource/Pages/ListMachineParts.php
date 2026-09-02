@@ -61,7 +61,8 @@ class ListMachineParts extends ListRecords
                                     throw new \Exception("Gagal Import: Mesin dengan nama/kode '{$machineRef}' tidak ditemukan di database.");
                                 }
                             } else {
-                                throw new \Exception("Gagal Import: Kolom 'Machine' tidak ditemukan atau kosong.");
+                                $headers = implode(', ', array_keys($data));
+                                throw new \Exception("Gagal Import: Kolom 'Machine' (mesin) tidak ditemukan atau kosong. Kolom yang terbaca dari Excel Anda: " . $headers);
                             }
                         }
                         
