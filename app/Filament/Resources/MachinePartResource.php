@@ -35,10 +35,11 @@ class MachinePartResource extends Resource
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
                     ->image()
+                    ->disk('public')
                     ->directory('machine-parts')
                     ->imageResizeMode('contain')
-                    ->imageResizeTargetWidth('1024')
-                    ->imageResizeTargetHeight('1024')
+                    ->imageResizeTargetWidth('1920')
+                    ->imageResizeTargetHeight('1920')
                     ->columnSpanFull(),
                 Forms\Components\DatePicker::make('installed_at')
                     ->default(now()),
