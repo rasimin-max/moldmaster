@@ -22,7 +22,11 @@ class ListUsers extends ListRecords
             \pxlrbt\FilamentExcel\Actions\Pages\ExportAction::make('export_excel')
                 ->label('Export User')
                 ->exports([
-                    \pxlrbt\FilamentExcel\Exports\ExcelExport::make('export')->fromTable()
+                    \pxlrbt\FilamentExcel\Exports\ExcelExport::make('export')
+                        ->fromTable()
+                        ->withColumns([
+                            \pxlrbt\FilamentExcel\Columns\Column::make('password')->heading('Password'),
+                        ])
                 ]),
             Actions\CreateAction::make()->label('+ Tambah User'),
         ];
