@@ -39,6 +39,7 @@ class MachinePartResource extends Resource
                     ->imageResizeMode('contain')
                     ->imageResizeTargetWidth('1024')
                     ->imageResizeTargetHeight('1024')
+                    ->maxSize(1024)
                     ->columnSpanFull(),
                 Forms\Components\DatePicker::make('installed_at')
                     ->default(now()),
