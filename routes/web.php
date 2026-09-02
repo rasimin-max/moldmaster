@@ -34,6 +34,15 @@ Route::get('/force-migrate', function () {
     }
 });
 
+// Fallback route to serve files if symlinks are broken on Railway's php artisan serve
+Route::get('/storage/{path}', function (string $path) {
+    $filePath = storage_path('app/public/' . $path);
+    if (!file_exists($filePath)) {
+        abort(404);
+    }
+    return response()->file($filePath);
+})->where('path', '.*');
+
 Route::get('/components/{component}/qr', [ComponentQrController::class, 'show'])
     ->name('components.qr');
 
