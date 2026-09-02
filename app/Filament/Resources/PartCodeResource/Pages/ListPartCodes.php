@@ -27,15 +27,33 @@ class ListPartCodes extends ListRecords
             \EightyNine\ExcelImport\ExcelImportAction::make()
                 ->color('primary')
                 ->processCollectionUsing(function (string $modelClass, \Illuminate\Support\Collection $collection) {
-                    foreach ($collection as $row) {
-                        $data = $row->toArray();
+                    foreach ($collection as $index => $row) {
+                        $originalData = $row->toArray();
                         
-                        $item = $data['item'] ?? $data['nama_part'] ?? $data['nama part'] ?? null;
+                        // Normalize keys
+                        $data = [];
+                        $hasData = false;
+                        foreach ($originalData as $k => $v) {
+                            if ($v !== null && $v !== '') {
+                                $hasData = true;
+                            }
+                            $nk = str_replace([' ', '.'], '_', strtolower(trim((string)$k)));
+                            $data[$nk] = $v;
+                        }
+                        
+                        if (!$hasData) {
+                            continue; // Skip completely empty rows
+                        }
+                        
+                        $item = $data['item'] ?? $data['nama_part'] ?? null;
                         $code = $data['code'] ?? $data['kode'] ?? null;
                         
-                        // Prevent error on trim(null) and ensure we have both item and code since they are required by DB
-                        if (empty($item) || empty($code)) {
-                            continue;
+                        if (empty($item)) {
+                            throw new \Exception("Gagal Import: Kolom 'Nama Part' atau 'Item' tidak ditemukan atau kosong.");
+                        }
+                        
+                        if (empty($code)) {
+                            throw new \Exception("Gagal Import: Kolom 'Kode' atau 'Code' tidak ditemukan atau kosong.");
                         }
                         
                         $code = trim((string) $code);
