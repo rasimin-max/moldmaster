@@ -37,9 +37,7 @@ class MachinePartResource extends Resource
                     ->image()
                     ->disk('public')
                     ->directory('machine-parts')
-                    ->imageResizeMode('contain')
-                    ->imageResizeTargetWidth('1920')
-                    ->imageResizeTargetHeight('1920')
+                    ->maxSize(51200) // Allow up to 50MB
                     ->columnSpanFull(),
                 Forms\Components\DatePicker::make('installed_at')
                     ->default(now()),
@@ -64,7 +62,11 @@ class MachinePartResource extends Resource
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image')
                     ->disk('public')
-                    ->circular(),
+                    ->circular()
+                    ->extraImgAttributes([
+                        'class' => 'transition-transform duration-300 hover:scale-[3] hover:z-50 relative hover:rounded-sm',
+                        'title' => 'Sorot untuk memperbesar',
+                    ]),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('part_number')
