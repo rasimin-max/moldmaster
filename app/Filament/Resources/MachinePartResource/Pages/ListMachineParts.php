@@ -59,6 +59,23 @@ class ListMachineParts extends ListRecords
                         $data['machine_id'] = $machineId;
                         $data['name'] = $name;
                         
+                        // Sanitize empty strings for integer and date columns to prevent Postgres cast errors
+                        foreach (['expected_life_hours', 'expected_life_cycles', 'installed_at', 'part_number'] as $field) {
+                            if (isset($data[$field]) && trim((string)$data[$field]) === '') {
+                                $data[$field] = null;
+                            }
+                        }
+                        
+                        // Default installed_at if still null or not set
+                        if (empty($data['installed_at'])) {
+                            $data['installed_at'] = now();
+                        }
+                        
+                        // Default is_active
+                        if (isset($data['is_active']) && trim((string)$data['is_active']) === '') {
+                            unset($data['is_active']); // Let database or model default handle it, or we could set to true
+                        }
+                        
                         $modelClass::updateOrCreate(
                             [
                                 'machine_id' => $machineId,
