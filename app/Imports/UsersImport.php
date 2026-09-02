@@ -60,18 +60,18 @@ class UsersImport implements OnEachRow, WithHeadingRow, WithEvents
             $keyStr = strtolower(str_replace([' ', '_'], '', (string) $key));
             $valStr = trim((string) $value);
             
-            if (str_contains($keyStr, 'name') || $keyStr === 'nama') {
-                if (!empty($valStr)) $name = $valStr;
-            }
-            if ($keyStr === 'id' || str_contains($keyStr, 'employeeid') || str_contains($keyStr, 'nik')) {
-                if (!empty($valStr)) $employeeId = $valStr;
-            }
-            if (str_contains($keyStr, 'role') || str_contains($keyStr, 'peran')) {
-                if (!empty($valStr)) $role = $valStr;
-            }
-            if (str_contains($keyStr, 'password') || str_contains($keyStr, 'sandi')) {
-                if (!empty($valStr)) $password = $valStr;
-            }
+        if (str_contains($keyStr, 'name') || str_contains($keyStr, 'nama')) {
+            if (!empty($valStr)) $name = $valStr;
+        }
+        if ($keyStr === 'id' || str_contains($keyStr, 'employeeid') || str_contains($keyStr, 'nik') || str_contains($keyStr, 'idkaryawan')) {
+            if (!empty($valStr)) $employeeId = $valStr;
+        }
+        if (str_contains($keyStr, 'role') || str_contains($keyStr, 'peran') || str_contains($keyStr, 'akses')) {
+            if (!empty($valStr)) $role = $valStr;
+        }
+        if (str_contains($keyStr, 'password') || str_contains($keyStr, 'sandi') || str_contains($keyStr, 'pass')) {
+            if (!empty($valStr)) $password = $valStr;
+        }
         }
 
         $data = [
