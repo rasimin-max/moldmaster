@@ -85,9 +85,7 @@ class ComponentResource extends Resource
                     ->disk('cloudinary')
                             ->label('Foto Komponen')
                             ->image()
-                            ->imageResizeMode('cover')
-                            ->imageCropAspectRatio('4:3')
-
+                            ->maxSize(51200)
                             ->directory('components')
                             ->nullable(),
                         Forms\Components\Textarea::make('description')
