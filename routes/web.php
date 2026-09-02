@@ -25,6 +25,15 @@ Route::get('/force-drop-constraint', function () {
     }
 });
 
+Route::get('/force-migrate', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return nl2br(e(\Illuminate\Support\Facades\Artisan::output()));
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
+});
+
 Route::get('/components/{component}/qr', [ComponentQrController::class, 'show'])
     ->name('components.qr');
 
