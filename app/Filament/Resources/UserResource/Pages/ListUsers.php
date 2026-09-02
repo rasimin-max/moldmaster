@@ -20,7 +20,10 @@ class ListUsers extends ListRecords
         return [
             $this->makeImportAction('Import User', UsersImport::class, 'Import User'),
             \pxlrbt\FilamentExcel\Actions\Pages\ExportAction::make('export_excel')
-                ->label('Export User'),
+                ->label('Export User')
+                ->exports([
+                    \pxlrbt\FilamentExcel\Exports\ExcelExport::make('export')->fromTable()
+                ]),
             Actions\CreateAction::make()->label('+ Tambah User'),
         ];
     }

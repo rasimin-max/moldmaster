@@ -51,17 +51,41 @@ class UsersImport implements OnEachRow, WithHeadingRow, WithEvents
             return;
         }
 
+        $name = 'Unknown User';
+        $employeeId = null;
+        $role = 'user';
+        $password = null;
+
+        foreach ($row as $key => $value) {
+            $keyStr = strtolower(str_replace([' ', '_'], '', (string) $key));
+            $valStr = trim((string) $value);
+            
+            if (str_contains($keyStr, 'name') || $keyStr === 'nama') {
+                if (!empty($valStr)) $name = $valStr;
+            }
+            if ($keyStr === 'id' || str_contains($keyStr, 'employeeid') || str_contains($keyStr, 'nik')) {
+                if (!empty($valStr)) $employeeId = $valStr;
+            }
+            if (str_contains($keyStr, 'role') || str_contains($keyStr, 'peran')) {
+                if (!empty($valStr)) $role = $valStr;
+            }
+            if (str_contains($keyStr, 'password') || str_contains($keyStr, 'sandi')) {
+                if (!empty($valStr)) $password = $valStr;
+            }
+        }
+
         $data = [
-            'name' => trim($row['name'] ?? ($row['nama'] ?? 'Unknown User')),
-            'role' => trim($row['role'] ?? 'user'),
+            'name' => $name,
+            'employee_id' => $employeeId,
+            'role' => $role,
         ];
 
         $existing = User::where('email', $email)->first();
         if ($existing) {
             $existing->fill($data);
             
-            if (!empty($row['password'])) {
-                $existing->password = Hash::make($row['password']);
+            if (!empty($password)) {
+                $existing->password = Hash::make($password);
             }
 
             if ($existing->isDirty()) {
@@ -75,7 +99,7 @@ class UsersImport implements OnEachRow, WithHeadingRow, WithEvents
 
         try {
             $data['email'] = $email;
-            $data['password'] = Hash::make(trim($row['password'] ?? 'password123'));
+            $data['password'] = Hash::make($password ?: 'password123');
             User::create($data);
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->errorInfo[1] == 1062 || $e->errorInfo[0] === '23505') {
