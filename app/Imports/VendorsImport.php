@@ -71,7 +71,7 @@ class VendorsImport implements OnEachRow, WithHeadingRow, WithEvents
 
         $data = [
             'name' => $name ?: 'Unknown Vendor',
-            'contact_person' => $contactPerson,
+            'pic_name' => $contactPerson,
             'email' => trim($row['email'] ?? null),
             'phone' => $phone,
             'address' => trim($row['address'] ?? ($row['alamat'] ?? null)),
