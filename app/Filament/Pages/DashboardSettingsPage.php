@@ -34,13 +34,12 @@ class DashboardSettingsPage extends Page implements HasForms
     public function mount(GeneralSettings $settings): void
     {
         $this->form->fill([
-            'active_widgets' => $settings->active_widgets ?? [],
+            'role_active_widgets' => $settings->role_active_widgets ?? [],
         ]);
     }
 
     public function form(Form $form): Form
     {
-        // Mendapatkan daftar widget otomatis dari folder
         $widgetFiles = glob(app_path('Filament/Widgets/*.php'));
         $widgetOptions = [];
         
@@ -49,17 +48,28 @@ class DashboardSettingsPage extends Page implements HasForms
             $widgetOptions[$className] = preg_replace('/(?<!^)([A-Z])/', ' $1', $className);
         }
 
+        $roles = \Spatie\Permission\Models\Role::pluck('name', 'name')->toArray();
+        $tabs = [];
+        
+        foreach ($roles as $role) {
+            $tabs[] = Forms\Components\Tabs\Tab::make(strtoupper(str_replace('_', ' ', $role)))
+                ->schema([
+                    CheckboxList::make("role_active_widgets.{$role}")
+                        ->label("Widget yang aktif untuk " . strtoupper(str_replace('_', ' ', $role)))
+                        ->options($widgetOptions)
+                        ->columns(2)
+                        ->bulkToggleable()
+                        ->searchable(),
+                ]);
+        }
+
         return $form
             ->schema([
-                Section::make('Widget Dashboard')
-                    ->description('Pilih widget apa saja yang ingin ditampilkan di Dashboard. Konfigurasi ini seperti Role (tinggal centang widget yang ingin dimunculkan).')
+                Section::make('Widget Dashboard (Per Role)')
+                    ->description('Pilih widget apa saja yang ingin ditampilkan di Dashboard untuk masing-masing role.')
                     ->schema([
-                        CheckboxList::make('active_widgets')
-                            ->label('Daftar Widget')
-                            ->options($widgetOptions)
-                            ->columns(2)
-                            ->bulkToggleable()
-                            ->searchable(),
+                        Forms\Components\Tabs::make('Role Tabs')
+                            ->tabs($tabs),
                     ]),
             ])
             ->statePath('data');
@@ -67,7 +77,7 @@ class DashboardSettingsPage extends Page implements HasForms
 
     public function save(GeneralSettings $settings): void
     {
-        $settings->active_widgets = $this->form->getState()['active_widgets'] ?? [];
+        $settings->role_active_widgets = $this->form->getState()['role_active_widgets'] ?? [];
         $settings->save();
 
         Notification::make()

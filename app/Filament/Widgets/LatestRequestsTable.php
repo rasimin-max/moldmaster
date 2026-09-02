@@ -12,7 +12,7 @@ class LatestRequestsTable extends BaseWidget
     public static function canView(): bool
     {
         try {
-            $activeWidgets = app(\App\Settings\GeneralSettings::class)->active_widgets ?? [];
+            $activeWidgets = app(\App\Settings\GeneralSettings::class)->getActiveWidgetsForUser();
             return empty($activeWidgets) || in_array(class_basename(static::class), $activeWidgets);
         } catch (\Throwable $e) {
             return true;
