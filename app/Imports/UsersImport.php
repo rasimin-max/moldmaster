@@ -89,8 +89,16 @@ class UsersImport implements OnEachRow, WithHeadingRow, WithEvents
             }
 
             if ($existing->isDirty()) {
-                $existing->save();
-                $this->updatedCount++;
+                try {
+                    $existing->save();
+                    $this->updatedCount++;
+                } catch (\Illuminate\Database\QueryException $e) {
+                    if ($e->errorInfo[1] == 1062 || $e->errorInfo[0] === '23505') {
+                        $this->skippedCount++;
+                        return;
+                    }
+                    throw $e;
+                }
             } else {
                 $this->skippedCount++;
             }
