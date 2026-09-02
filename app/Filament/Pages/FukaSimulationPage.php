@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 
 class FukaSimulationPage extends Page
 {
+    use \BezhanSalleh\FilamentShield\Traits\HasPageShield;
     protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
     protected static ?string $navigationGroup = 'Detail Project';
     protected static ?string $navigationLabel = 'FUKA Simulation';

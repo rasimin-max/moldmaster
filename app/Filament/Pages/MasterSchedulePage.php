@@ -13,6 +13,7 @@ use Filament\Support\Enums\MaxWidth;
 
 class MasterSchedulePage extends Page
 {
+    use \BezhanSalleh\FilamentShield\Traits\HasPageShield;
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
     protected static ?string $navigationGroup = 'Detail Project';
     protected static ?string $navigationLabel = 'Master Schedule';

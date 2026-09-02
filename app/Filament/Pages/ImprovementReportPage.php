@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ImprovementReportPage extends Page implements HasTable
 {
+    use \BezhanSalleh\FilamentShield\Traits\HasPageShield;
     use InteractsWithTable;
     use \Filament\Pages\Concerns\ExposesTableToWidgets;
     
