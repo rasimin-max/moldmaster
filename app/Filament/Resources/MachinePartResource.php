@@ -63,6 +63,7 @@ class MachinePartResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
                     ->circular(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
