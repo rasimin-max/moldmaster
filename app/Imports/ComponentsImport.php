@@ -134,7 +134,6 @@ class ComponentsImport implements OnEachRow, WithHeadingRow, WithEvents
             'required_qty' => (int)($row['kebutuhan'] ?? 0),
             'unit_price' => $unitPrice,
             'status' => $status,
-            'photo' => trim($row['foto'] ?? ''),
         ];
 
         $terpakai = (int)($row['barang_dipakai'] ?? ($row['terpakai'] ?? 0));
