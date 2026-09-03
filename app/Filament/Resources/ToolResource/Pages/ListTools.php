@@ -24,7 +24,10 @@ class ListTools extends ListRecords
                 ->exports([
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make()->fromTable(),
                 ]),
-            $this->makeImportAction('Import', ToolsImport::class, 'Import Alat'),
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->label('Import Alat')
+                ->color('primary')
+                ->use(ToolsImport::class),
             Actions\CreateAction::make()->label('+ Tambah Alat'),
         ];
     }
