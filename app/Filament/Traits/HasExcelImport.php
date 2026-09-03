@@ -51,18 +51,28 @@ trait HasExcelImport
                     return;
                 }
 
-                $importer = new $importerClass();
-                Excel::import($importer, $fullPath);
+                try {
+                    $importer = new $importerClass();
+                    Excel::import($importer, $fullPath);
 
-                $imported = $importer->importedCount ?? 0;
-                $updated  = $importer->updatedCount ?? 0;
-                $skipped  = $importer->skippedCount ?? 0;
+                    $imported = $importer->importedCount ?? ($importer->createdCount ?? 0);
+                    $updated  = $importer->updatedCount ?? 0;
+                    $skipped  = $importer->skippedCount ?? 0;
+                    $failed   = $importer->failedCount ?? 0;
 
-                Notification::make()
-                    ->title('Import Selesai')
-                    ->body("Berhasil: {$imported} | Diperbarui: {$updated} | Dilewati: {$skipped}")
-                    ->success()
-                    ->send();
+                    Notification::make()
+                        ->title('Import Selesai')
+                        ->body("Berhasil (Baru): {$imported} | Diperbarui: {$updated} | Dilewati: {$skipped} | Gagal (Error Data): {$failed}")
+                        ->success()
+                        ->send();
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Excel Import Error: ' . $e->getMessage());
+                    Notification::make()
+                        ->title('Gagal Membaca File Excel')
+                        ->body('Pesan Error: ' . $e->getMessage())
+                        ->danger()
+                        ->send();
+                }
 
                 // Clean up temp file
                 if (file_exists($fullPath)) {
