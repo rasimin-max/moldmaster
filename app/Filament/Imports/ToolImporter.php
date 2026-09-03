@@ -14,12 +14,23 @@ class ToolImporter extends Importer
     public static function getColumns(): array
     {
         return [
+            ImportColumn::make('photo')->rules(['nullable']),
             ImportColumn::make('code')->requiredMapping()->rules(['required', 'max:255']),
             ImportColumn::make('name')->requiredMapping()->rules(['required', 'max:255']),
             ImportColumn::make('category')->rules(['nullable', 'max:255']),
             ImportColumn::make('total_quantity')->numeric()->rules(['integer', 'min:0']),
             ImportColumn::make('available_quantity')->numeric()->rules(['integer', 'min:0']),
-            ImportColumn::make('condition')->rules(['nullable', 'in:good,fair,poor,damaged']),
+            ImportColumn::make('condition')->rules(['nullable', 'in:good,fair,poor,damaged'])
+                ->castStateUsing(function (?string $state): ?string {
+                    if (blank($state)) return 'good';
+                    return match (strtolower(trim($state))) {
+                        'baik', 'good' => 'good',
+                        'cukup', 'fair' => 'fair',
+                        'kurang', 'kurang baik', 'poor' => 'poor',
+                        'rusak', 'damaged' => 'damaged',
+                        default => 'good',
+                    };
+                }),
             ImportColumn::make('location')->rules(['nullable', 'max:255']),
             ImportColumn::make('description')->rules(['nullable']),
         ];
