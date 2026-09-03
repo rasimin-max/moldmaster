@@ -15,24 +15,42 @@ class ToolsImport implements OnEachRow, WithHeadingRow, WithEvents
 {
     public int $skippedCount = 0;
     public int $updatedCount = 0;
+    public int $createdCount = 0;
+    public int $failedCount = 0;
 
     public function registerEvents(): array
     {
         return [
             AfterImport::class => function(AfterImport $event) {
-                if ($this->skippedCount > 0 || $this->updatedCount > 0) {
+                if ($this->skippedCount > 0 || $this->updatedCount > 0 || $this->createdCount > 0 || $this->failedCount > 0) {
                     $body = [];
+                    if ($this->createdCount > 0) {
+                        $body[] = "{$this->createdCount} item baru berhasil ditambahkan.";
+                    }
                     if ($this->updatedCount > 0) {
                         $body[] = "{$this->updatedCount} item diperbarui datanya.";
                     }
                     if ($this->skippedCount > 0) {
-                        $body[] = "{$this->skippedCount} item dilewati (sudah ada & sama persis).";
+                        $body[] = "{$this->skippedCount} item dilewati (sudah ada).";
+                    }
+                    if ($this->failedCount > 0) {
+                        $body[] = "{$this->failedCount} item gagal di-import karena error data.";
+                    }
+
+                    if (empty($body)) {
+                        $body[] = "Tidak ada baris yang diproses.";
                     }
 
                     Notification::make()
                         ->success()
                         ->title('Import Selesai')
                         ->body(implode(' ', $body))
+                        ->send();
+                } else {
+                    Notification::make()
+                        ->warning()
+                        ->title('Import Gagal/Kosong')
+                        ->body('Sistem tidak memproses baris apapun. Pastikan format Excel Anda benar dan baris pertama adalah judul kolom (Header).')
                         ->send();
                 }
             },
@@ -44,7 +62,10 @@ class ToolsImport implements OnEachRow, WithHeadingRow, WithEvents
         $row = $rowObj->toArray();
         
         $code = trim($row['kode_alat'] ?? ($row['kode'] ?? ($row['kode_qr'] ?? 'TL-' . strtoupper(Str::random(4)))));
-        if (empty($code)) return;
+        if (empty($code)) {
+            $this->failedCount++;
+            return;
+        }
 
         $statusStr = strtolower(trim($row['kondisi'] ?? 'baik'));
         $condition = match(true) {
@@ -83,12 +104,10 @@ class ToolsImport implements OnEachRow, WithHeadingRow, WithEvents
 
         try {
             Tool::create(array_merge(['code' => $code], $data));
-        } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->errorInfo[1] == 1062 || $e->errorInfo[0] === '23505') {
-                $this->skippedCount++;
-                return;
-            }
-            throw $e;
+            $this->createdCount++;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('ToolsImport Error on Code ' . $code . ': ' . $e->getMessage());
+            $this->failedCount++;
         }
     }
 }
