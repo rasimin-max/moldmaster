@@ -120,7 +120,7 @@ class ComponentsImport implements OnEachRow, WithHeadingRow, WithEvents
         $unitPrice = (float)($cleanPrice ?: 0);
 
         $data = [
-            'name' => trim($row['bagian'] ?? ($row['nama_komponen'] ?? 'Unknown Component')),
+            'name' => trim($row['nama_komponen'] ?? ($row['nama'] ?? 'Unknown Component')),
             'category_id' => $category?->id,
             'mold_id' => $mold?->id,
             'material_type_id' => $materialType?->id,
@@ -128,14 +128,14 @@ class ComponentsImport implements OnEachRow, WithHeadingRow, WithEvents
             'material' => $materialName,
             'size_spec' => trim($row['spesifikasi_ukuran'] ?? ($row['spek'] ?? ($row['spesifikasi'] ?? ($row['ukuran'] ?? '')))),
             'rack_location' => trim($row['lokasi_rak'] ?? ''),
-            'stock' => (int)($row['jumlah_masuk'] ?? ($row['stok'] ?? 0)),
+            'stock' => (int)($row['stok_sekarang'] ?? ($row['barang_masuk'] ?? ($row['jumlah_masuk'] ?? ($row['stok'] ?? 0)))),
             'required_qty' => (int)($row['kebutuhan'] ?? 0),
             'unit_price' => $unitPrice,
             'status' => $status,
             'photo' => trim($row['foto'] ?? ''),
         ];
 
-        $terpakai = (int)($row['terpakai'] ?? 0);
+        $terpakai = (int)($row['barang_dipakai'] ?? ($row['terpakai'] ?? 0));
 
         // Check if it already exists in DB
         $existingComponent = Component::withTrashed()->where('code', $code)->first();
