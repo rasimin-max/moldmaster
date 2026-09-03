@@ -82,6 +82,8 @@ class ComponentsImport implements OnEachRow, WithHeadingRow, WithEvents
                     'project_id' => $project?->id,
                     'status' => 'active'
                 ]);
+            } elseif ($project && !$mold->project_id) {
+                $mold->update(['project_id' => $project->id]);
             }
         }
 
