@@ -1,6 +1,6 @@
 @php
     $state = $getState();
-    $imageUrl = $state ? \Illuminate\Support\Facades\Storage::disk('public')->url($state) : null;
+    $imageUrl = $state ? (str_starts_with($state, 'http') ? $state : \Illuminate\Support\Facades\Storage::disk('cloudinary')->url($state)) : null;
 @endphp
 
 @if($imageUrl)
