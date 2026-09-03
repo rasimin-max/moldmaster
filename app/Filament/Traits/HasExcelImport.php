@@ -19,11 +19,6 @@ trait HasExcelImport
                     ->label($modalTitle . ' Data')
                     ->disk('local')
                     ->directory('imports-temp')
-                    ->acceptedFileTypes([
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                        'application/vnd.ms-excel',
-                        'text/csv',
-                    ])
                     ->required(),
             ])
             ->action(function (array $data) use ($importerClass) {
