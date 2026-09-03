@@ -34,6 +34,17 @@ class ToolResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('code')->label('Kode Alat')->required()->unique(ignoreRecord: true)->placeholder('TL-001'),
                 Forms\Components\TextInput::make('name')->label('Nama Alat')->required(),
+                Forms\Components\Select::make('type')->label('Tipe Alat')
+                    ->options([
+                        'Hand Tool' => 'Hand Tool',
+                        'Power Tool' => 'Power Tool',
+                        'Measuring Tool' => 'Measuring Tool',
+                        'Cutting Tool' => 'Cutting Tool',
+                        'Consumable' => 'Consumable',
+                        'Other' => 'Lainnya',
+                    ])
+                    ->searchable()
+                    ->nullable(),
                 Forms\Components\TextInput::make('category')->label('Kategori')->placeholder('Hand Tools, Measuring, Power Tools')->nullable(),
                 Forms\Components\TextInput::make('total_quantity')->label('Total Qty')->numeric()->required()->default(1),
                 Forms\Components\TextInput::make('available_quantity')->label('Qty Tersedia')->numeric()->required()->default(1),
@@ -52,6 +63,7 @@ class ToolResource extends Resource
             Tables\Columns\ViewColumn::make('photo')->label('Foto')->view('filament.tables.columns.hover-image'),
             Tables\Columns\TextColumn::make('code')->label('Kode')->searchable()->sortable()->weight('bold'),
             Tables\Columns\TextColumn::make('name')->label('Nama Alat')->searchable()->sortable(),
+            Tables\Columns\TextColumn::make('type')->label('Tipe Alat')->searchable()->sortable(),
             Tables\Columns\TextColumn::make('category')->label('Kategori')->badge()->color('gray'),
             Tables\Columns\TextColumn::make('available_quantity')->label('Tersedia')->alignCenter()->weight('bold')
                 ->color(fn($record) => $record->available_quantity === 0 ? 'danger' : 'success'),

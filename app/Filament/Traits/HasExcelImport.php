@@ -27,7 +27,14 @@ trait HasExcelImport
                     ->required(),
             ])
             ->action(function (array $data) use ($importerClass) {
-                $relativePath = $data['file'];
+                \Illuminate\Support\Facades\Log::info('Import action started. Data: ', $data);
+                $relativePath = $data['file'] ?? null;
+                if (!$relativePath) {
+                    \Illuminate\Support\Facades\Log::error('No file found in data array');
+                    Notification::make()->title('Error')->body('File kosong!')->danger()->send();
+                    return;
+                }
+
                 // Try multiple possible paths
                 $possiblePaths = [
                     storage_path('app/' . $relativePath),
