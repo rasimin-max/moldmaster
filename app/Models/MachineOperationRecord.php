@@ -47,7 +47,7 @@ class MachineOperationRecord extends Model
         static::saving(function (MachineOperationRecord $record) {
             if ($record->status === 'completed' && empty($record->duration_minutes) && $record->end_time && $record->start_time) {
                 // Calculate duration in minutes if not filled manually
-                $record->duration_minutes = Carbon::parse($record->start_time)->diffInMinutes(Carbon::parse($record->end_time));
+                $record->duration_minutes = (int) round(\Carbon\Carbon::parse($record->start_time)->diffInMinutes(\Carbon\Carbon::parse($record->end_time), true));
             }
         });
     }

@@ -193,7 +193,7 @@ class MachineOperationRecordResource extends Resource
                                 $start = $get('start_time');
                                 $end = $get('end_time');
                                 if ($start && $end) {
-                                    $set('duration_minutes', \Carbon\Carbon::parse($start)->diffInMinutes(\Carbon\Carbon::parse($end)));
+                                    $set('duration_minutes', (int) round(\Carbon\Carbon::parse($start)->diffInMinutes(\Carbon\Carbon::parse($end), true)));
                                 }
                             }),
                         Forms\Components\DateTimePicker::make('end_time')
@@ -203,7 +203,7 @@ class MachineOperationRecordResource extends Resource
                                 $start = $get('start_time');
                                 $end = $get('end_time');
                                 if ($start && $end) {
-                                    $set('duration_minutes', \Carbon\Carbon::parse($start)->diffInMinutes(\Carbon\Carbon::parse($end)));
+                                    $set('duration_minutes', (int) round(\Carbon\Carbon::parse($start)->diffInMinutes(\Carbon\Carbon::parse($end), true)));
                                 }
                             }),
                         Forms\Components\TextInput::make('duration_minutes')
