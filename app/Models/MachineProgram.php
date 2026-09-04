@@ -45,17 +45,19 @@ class MachineProgram extends Model
                 $time = str_replace(',', '.', $program->estimated_time);
             }
 
-            \App\Models\MachineOperationRecord::create([
-                'machine_id' => $program->machine_id,
-                'project_id' => $program->project_id,
-                'mold_id' => $program->mold_id,
-                'component_id' => $program->component_id,
-                'machine_program_id' => $program->id,
-                'status' => 'plan_job',
-                'operation_type' => 'production',
-                'planned_duration_minutes' => $time,
-                // start_time is nullable now
-            ]);
+            if ($program->machine_id) {
+                \App\Models\MachineOperationRecord::create([
+                    'machine_id' => $program->machine_id,
+                    'project_id' => $program->project_id,
+                    'mold_id' => $program->mold_id,
+                    'component_id' => $program->component_id,
+                    'machine_program_id' => $program->id,
+                    'status' => 'plan_job',
+                    'operation_type' => 'production',
+                    'planned_duration_minutes' => $time,
+                    // start_time is nullable now
+                ]);
+            }
         });
     }
 }
