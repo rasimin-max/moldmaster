@@ -77,7 +77,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('avatar')->label('')->circular()->defaultImageUrl(asset('images/default-avatar.png')),
+                Tables\Columns\ImageColumn::make('avatar')->label('')->circular()->disk('cloudinary')->defaultImageUrl(asset('images/default-avatar.png')),
                 Tables\Columns\TextColumn::make('employee_id')->label('ID')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('name')->label('Nama')->searchable()->sortable()->weight('bold'),
                 Tables\Columns\TextColumn::make('email')->label('Email')->searchable(),
