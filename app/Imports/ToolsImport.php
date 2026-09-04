@@ -76,16 +76,16 @@ class ToolsImport implements OnEachRow, WithHeadingRow, WithEvents
         };
 
         $data = [
-            'name' => trim($row['nama_alat'] ?? 'Unknown Tool'),
-            'category' => trim($row['kategori'] ?? ''),
+            'name' => trim((string)($row['nama_alat'] ?? 'Unknown Tool')),
+            'category' => trim((string)($row['kategori'] ?? '')),
             'total_quantity' => (int)($row['total_qty'] ?? ($row['total'] ?? 1)),
             'available_quantity' => (int)($row['qty_tersedia'] ?? ($row['tersedia'] ?? 1)),
             'condition' => $condition,
-            'location' => trim($row['lokasi'] ?? ($row['lokasi_penyimpanan'] ?? '')),
-            'description' => trim($row['deskripsi'] ?? null),
+            'location' => trim((string)($row['lokasi'] ?? ($row['lokasi_penyimpanan'] ?? ''))),
+            'description' => trim((string)($row['deskripsi'] ?? null)),
         ];
 
-        $existingTool = Tool::withTrashed()->where('code', $code)->first();
+        $existingTool = Tool::withTrashed()->where('code', (string)$code)->first();
         if ($existingTool) {
             if ($existingTool->trashed()) {
                 $existingTool->restore();

@@ -14,7 +14,7 @@ class Tool extends Model
     use HasFactory, SoftDeletes, LogsAuditActivity;
 
     protected $fillable = [
-        'code', 'name', 'type', 'category', 'total_quantity', 'available_quantity', 'min_stock',
+        'code', 'name', 'category', 'total_quantity', 'available_quantity', 'min_stock',
         'condition', 'location', 'description', 'photo',
     ];
 
