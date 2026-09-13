@@ -237,6 +237,7 @@ class MachineOperationRecordResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->orderByRaw("CASE WHEN status = 'completed' THEN 2 ELSE 1 END"))
             ->columns([
                 Tables\Columns\ViewColumn::make('photo')
                     ->label('Foto')
