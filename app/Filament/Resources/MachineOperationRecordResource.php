@@ -373,6 +373,18 @@ class MachineOperationRecordResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('FinishJob')
+                    ->label('Selesai')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->hidden(fn (MachineOperationRecord $record) => $record->status === 'completed')
+                    ->action(function (MachineOperationRecord $record) {
+                        $record->update([
+                            'status' => 'completed',
+                            'end_time' => now(), // fallback if no manual time is filled, can use end time
+                        ]);
+                    }),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
