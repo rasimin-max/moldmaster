@@ -44,34 +44,41 @@ class UsersImport implements OnEachRow, WithHeadingRow, WithEvents
     {
         $row = $rowObj->toArray();
         
-        $email = trim($row['email'] ?? '');
-        
-        if (empty($email)) {
-            $this->skippedCount++;
-            return;
-        }
-
+        $email = '';
         $name = 'Unknown User';
         $employeeId = null;
         $role = 'user';
         $password = null;
 
         foreach ($row as $key => $value) {
-            $keyStr = strtolower(str_replace([' ', '_'], '', (string) $key));
+            $keyStr = strtolower(str_replace([' ', '_', '-'], '', (string) $key));
             $valStr = trim((string) $value);
             
-        if (str_contains($keyStr, 'name') || str_contains($keyStr, 'nama')) {
-            if (!empty($valStr)) $name = $valStr;
+            if (str_contains($keyStr, 'email') || str_contains($keyStr, 'mail')) {
+                if (!empty($valStr)) $email = $valStr;
+            }
+            if (str_contains($keyStr, 'name') || str_contains($keyStr, 'nama')) {
+                if (!empty($valStr)) $name = $valStr;
+            }
+            if ($keyStr === 'id' || str_contains($keyStr, 'employeeid') || str_contains($keyStr, 'nik') || str_contains($keyStr, 'idkaryawan')) {
+                if (!empty($valStr)) $employeeId = $valStr;
+            }
+            if (str_contains($keyStr, 'role') || str_contains($keyStr, 'peran') || str_contains($keyStr, 'akses')) {
+                if (!empty($valStr)) $role = $valStr;
+            }
+            if (str_contains($keyStr, 'password') || str_contains($keyStr, 'sandi') || str_contains($keyStr, 'pass')) {
+                if (!empty($valStr)) $password = $valStr;
+            }
         }
-        if ($keyStr === 'id' || str_contains($keyStr, 'employeeid') || str_contains($keyStr, 'nik') || str_contains($keyStr, 'idkaryawan')) {
-            if (!empty($valStr)) $employeeId = $valStr;
-        }
-        if (str_contains($keyStr, 'role') || str_contains($keyStr, 'peran') || str_contains($keyStr, 'akses')) {
-            if (!empty($valStr)) $role = $valStr;
-        }
-        if (str_contains($keyStr, 'password') || str_contains($keyStr, 'sandi') || str_contains($keyStr, 'pass')) {
-            if (!empty($valStr)) $password = $valStr;
-        }
+        
+        if (empty($email)) {
+            // Generate a random email if missing to prevent fail if it's not strictly required
+            // or just skip. The user wants to import. But email is required in the DB.
+            if ($employeeId) {
+                $email = strtolower($employeeId) . '@moldmaster.id';
+            } else {
+                $email = 'user_' . uniqid() . '@moldmaster.id';
+            }
         }
 
         $data = [
