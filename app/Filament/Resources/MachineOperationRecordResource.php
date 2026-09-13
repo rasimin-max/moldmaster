@@ -237,7 +237,7 @@ class MachineOperationRecordResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->orderByRaw("CASE WHEN status = 'completed' THEN 2 ELSE 1 END"))
+            ->modifyQueryUsing(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->orderByRaw("CASE WHEN status = 'completed' THEN 2 ELSE 1 END")->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\ViewColumn::make('photo')
                     ->label('Foto')
@@ -420,8 +420,7 @@ class MachineOperationRecordResource extends Resource
                         ]),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->defaultSort('created_at', 'desc');
+            ]);
     }
 
     public static function getRelations(): array
