@@ -10,7 +10,7 @@ return new class extends Migration
     public function up(): void
     {
         // Generate all permissions first
-        Artisan::call('shield:generate', ['--all' => true]);
+        Artisan::call('shield:generate', ['--all' => true, '--panel' => 'admin']);
 
         $operator = Role::firstOrCreate(['name' => 'operator', 'guard_name' => 'web']);
         $leader = Role::firstOrCreate(['name' => 'leader', 'guard_name' => 'web']);

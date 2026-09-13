@@ -49,11 +49,8 @@ class UserPolicy
      * @param  \App\Models\User  $user
      * @return bool
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user): bool
     {
-        if ($model->hasRole('super_admin') && !$user->hasRole('super_admin')) {
-            return false;
-        }
         return $user->can('update_user');
     }
 
@@ -61,14 +58,10 @@ class UserPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
      * @return bool
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user): bool
     {
-        if ($model->hasRole('super_admin') && !$user->hasRole('super_admin')) {
-            return false;
-        }
         return $user->can('delete_user');
     }
 
