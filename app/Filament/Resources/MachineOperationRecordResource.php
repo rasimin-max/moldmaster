@@ -255,6 +255,29 @@ class MachineOperationRecordResource extends Resource
                     ->copyable()
                     ->weight('bold')
                     ->color('primary'),
+                Tables\Columns\TextInputColumn::make('barcode')
+                    ->label('Barcode Program')
+                    ->sortable()
+                    ->searchable()
+                    ->updateStateUsing(function ($record, $state) {
+                        $record->barcode = $state;
+                        if ($state) {
+                            $program = \App\Models\MachineProgram::where('barcode', $state)->first();
+                            if ($program) {
+                                $record->machine_program_id = $program->id;
+                                $record->machine_id = $program->machine_id;
+                                $record->project_id = $program->project_id;
+                                $record->mold_id = $program->mold_id;
+                                $record->component_id = $program->component_id;
+                                
+                                if ($program->estimated_time) {
+                                    $time = str_replace(',', '.', $program->estimated_time);
+                                    $record->planned_duration_minutes = $time;
+                                }
+                            }
+                        }
+                        $record->save();
+                    }),
                 Tables\Columns\TextColumn::make('machine.name')
                     ->label('Nama Mesin')
                     ->sortable()
