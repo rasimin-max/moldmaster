@@ -39,22 +39,24 @@ class MachineProgram extends Model
 
     protected static function booted(): void
     {
-        static::created(function (MachineProgram $program) {
+        static::saved(function (MachineProgram $program) {
             $time = null;
             if ($program->estimated_time) {
                 $time = str_replace(',', '.', $program->estimated_time);
             }
 
-            \App\Models\MachineOperationRecord::create([
-                'machine_id' => $program->machine_id,
-                'project_id' => $program->project_id,
-                'mold_id' => $program->mold_id,
-                'component_id' => $program->component_id,
-                'machine_program_id' => $program->id,
-                'status' => 'plan_job',
-                'operation_type' => 'production',
-                'planned_duration_minutes' => $time,
-            ]);
+            \App\Models\MachineOperationRecord::firstOrCreate(
+                ['machine_program_id' => $program->id],
+                [
+                    'machine_id' => $program->machine_id,
+                    'project_id' => $program->project_id,
+                    'mold_id' => $program->mold_id,
+                    'component_id' => $program->component_id,
+                    'status' => 'plan_job',
+                    'operation_type' => 'production',
+                    'planned_duration_minutes' => $time,
+                ]
+            );
         });
     }
 }
