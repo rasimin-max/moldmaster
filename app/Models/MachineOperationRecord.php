@@ -14,7 +14,6 @@ class MachineOperationRecord extends Model
     use HasFactory, SoftDeletes, LogsAuditActivity;
 
     protected $fillable = [
-        'record_id',
         'machine_id',
         'user_id',
         'project_id',
@@ -49,14 +48,6 @@ class MachineOperationRecord extends Model
 
     protected static function booted(): void
     {
-        static::creating(function (MachineOperationRecord $record) {
-            if (empty($record->record_id)) {
-                $date = now()->format('ymd');
-                $latest = static::whereDate('created_at', now()->toDateString())->count();
-                $record->record_id = 'MOR-' . $date . '-' . str_pad($latest + 1, 4, '0', STR_PAD_LEFT);
-            }
-        });
-
         static::saving(function (MachineOperationRecord $record) {
             // Calculate duration from manual hours/minutes if provided
             if ($record->manual_hours !== null || $record->manual_minutes !== null) {
