@@ -270,10 +270,24 @@ class MachineOperationRecordResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('shift')
+                Tables\Columns\SelectColumn::make('shift')
                     ->label('Shift')
+                    ->options([
+                        'Pagi' => 'Pagi',
+                        'Malam' => 'Malam',
+                    ])
                     ->sortable()
                     ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextInputColumn::make('manual_hours')
+                    ->label('Jam')
+                    ->type('number')
+                    ->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextInputColumn::make('manual_minutes')
+                    ->label('Menit')
+                    ->type('number')
+                    ->sortable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('operation_type')
                     ->badge()
