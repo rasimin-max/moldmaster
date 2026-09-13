@@ -18,4 +18,14 @@ class ListMachineOperationRecords extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    public function getTabs(): array
+    {
+        return [
+            'active' => \Filament\Resources\Components\Tab::make('Active Jobs')
+                ->modifyQueryUsing(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('status', '!=', 'completed')),
+            'completed' => \Filament\Resources\Components\Tab::make('Laporan (Completed)')
+                ->modifyQueryUsing(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('status', 'completed')),
+        ];
+    }
 }
