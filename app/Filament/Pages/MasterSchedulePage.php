@@ -72,7 +72,7 @@ class MasterSchedulePage extends Page
             $daysCount = 7;
         }
 
-        $machinesQuery = \App\Models\Machine::with(['operationRecords' => function ($query) use ($startDate, $endDate) {
+        $machinesQuery = \App\Models\Machine::with(['schedules' => function ($query) use ($startDate, $endDate) {
             $query->where(function ($q) use ($startDate, $endDate) {
                 $q->whereBetween('start_time', [$startDate, $endDate])
                   ->orWhereBetween('end_time', [$startDate, $endDate]);
@@ -241,7 +241,7 @@ class MasterSchedulePage extends Page
                 ->submitAction(new \Illuminate\Support\HtmlString('<button type="submit" class="filament-button inline-flex items-center justify-center font-medium tracking-tight border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset rounded-lg bg-primary-600 text-white hover:bg-primary-500 focus:bg-primary-700 focus:ring-offset-primary-700 h-9 px-4">Simpan Jadwal</button>'))
             ])
             ->action(function (array $data) {
-                \App\Models\MachineOperationRecord::create([
+                \App\Models\MachineSchedule::create([
                     'project_id' => $data['project_id'],
                     'machine_id' => $data['machine_id'],
                     'component_id' => $data['component_id'] ?? null,
@@ -262,7 +262,7 @@ class MasterSchedulePage extends Page
             ->modalWidth(MaxWidth::TwoExtraLarge)
             ->modalSubmitActionLabel('Simpan Perubahan')
             ->fillForm(function (array $arguments): array {
-                $record = \App\Models\MachineOperationRecord::find($arguments['record']);
+                $record = \App\Models\MachineSchedule::find($arguments['record']);
                 return $record ? $record->toArray() : [];
             })
             ->form([
@@ -309,7 +309,7 @@ class MasterSchedulePage extends Page
                     ->modalDescription('Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan.')
                     ->modalSubmitActionLabel('Ya, Hapus')
                     ->action(function (array $arguments, Action $action) {
-                        $record = \App\Models\MachineOperationRecord::find($arguments['record']);
+                        $record = \App\Models\MachineSchedule::find($arguments['record']);
                         if ($record) {
                             $record->delete();
                             \Filament\Notifications\Notification::make()
@@ -321,7 +321,7 @@ class MasterSchedulePage extends Page
                     })
             ])
             ->action(function (array $data, array $arguments) {
-                $record = \App\Models\MachineOperationRecord::find($arguments['record']);
+                $record = \App\Models\MachineSchedule::find($arguments['record']);
                 if ($record) {
                     $record->update($data);
                 }
@@ -421,7 +421,7 @@ class MasterSchedulePage extends Page
 
     public function updateRecordShift($recordId, $machineId, $newStartTime, $segmentStartStr = null, $segmentEndStr = null)
     {
-        $record = \App\Models\MachineOperationRecord::find($recordId);
+        $record = \App\Models\MachineSchedule::find($recordId);
         if (!$record) return;
 
         $newStart = \Carbon\Carbon::parse($newStartTime);
@@ -496,13 +496,13 @@ class MasterSchedulePage extends Page
             ->modalWidth(MaxWidth::SevenExtraLarge)
             ->modalSubmitActionLabel('Simpan Jadwal')
             ->fillForm(function (array $arguments): array {
-                $machine = \App\Models\Machine::with(['operationRecords' => function($q) {
+                $machine = \App\Models\Machine::with(['schedules' => function($q) {
                     // Hanya tampilkan yang aktif/pending atau yang di masa depan
                     $q->where('status', '!=', 'completed')->orderBy('start_time');
                 }])->find($arguments['machine']);
                 
                 return [
-                    'records' => $machine ? $machine->operationRecords->toArray() : [],
+                    'records' => $machine ? $machine->schedules->toArray() : [],
                 ];
             })
             ->form([
@@ -547,14 +547,14 @@ class MasterSchedulePage extends Page
                     $existingIds = collect($data['records'])->pluck('id')->filter()->toArray();
                     
                     // Hapus data jadwal pending/aktif yang dihapus dari form
-                    $machine->operationRecords()
+                    $machine->schedules()
                         ->where('status', '!=', 'completed')
                         ->whereNotIn('id', $existingIds)
                         ->delete();
                         
                     foreach ($data['records'] as $recordData) {
                         if (!empty($recordData['id'])) {
-                            $machine->operationRecords()->where('id', $recordData['id'])->update([
+                            $machine->schedules()->where('id', $recordData['id'])->update([
                                 'project_id' => $recordData['project_id'],
                                 'component_id' => $recordData['component_id'],
                                 'operation_type' => $recordData['operation_type'],
@@ -563,7 +563,7 @@ class MasterSchedulePage extends Page
                                 'status' => $recordData['status'],
                             ]);
                         } else {
-                            $machine->operationRecords()->create([
+                            $machine->schedules()->create([
                                 'project_id' => $recordData['project_id'],
                                 'component_id' => $recordData['component_id'],
                                 'operation_type' => $recordData['operation_type'],

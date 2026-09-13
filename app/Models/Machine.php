@@ -32,6 +32,11 @@ class Machine extends Model
         return $this->hasMany(MachineOperationRecord::class);
     }
 
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(MachineSchedule::class);
+    }
+
     public function parts(): HasMany
     {
         return $this->hasMany(MachinePart::class);
