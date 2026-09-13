@@ -23,10 +23,17 @@ class ListUsers extends ListRecords
                 ->label('Export User')
                 ->exports([
                     \pxlrbt\FilamentExcel\Exports\ExcelExport::make('export')
-                        ->fromTable()
                         ->withColumns([
+                            \pxlrbt\FilamentExcel\Columns\Column::make('avatar')->heading('Avatar'),
+                            \pxlrbt\FilamentExcel\Columns\Column::make('employee_id')->heading('ID'),
+                            \pxlrbt\FilamentExcel\Columns\Column::make('name')->heading('Nama'),
+                            \pxlrbt\FilamentExcel\Columns\Column::make('email')->heading('Email'),
+                            \pxlrbt\FilamentExcel\Columns\Column::make('roles.name')->heading('Role'),
+                            \pxlrbt\FilamentExcel\Columns\Column::make('area')->heading('Area'),
+                            \pxlrbt\FilamentExcel\Columns\Column::make('is_active')->heading('Aktif'),
                             \pxlrbt\FilamentExcel\Columns\Column::make('password')->heading('Password'),
                         ])
+                        ->withHeadings()
                 ]),
             Actions\CreateAction::make()->label('+ Tambah User'),
         ];
