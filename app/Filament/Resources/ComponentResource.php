@@ -83,6 +83,7 @@ class ComponentResource extends Resource
                     Forms\Components\Section::make('Media & Catatan')->schema([
                         Forms\Components\FileUpload::make('photo')
                             ->label('Foto Komponen')
+                            ->disk('cloudinary')
                             ->image()
                             ->maxSize(51200)
                             ->directory('components')
