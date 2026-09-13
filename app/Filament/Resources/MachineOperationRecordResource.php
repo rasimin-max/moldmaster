@@ -42,11 +42,7 @@ class MachineOperationRecordResource extends Resource
                     ])->columns(2),
                 Forms\Components\Section::make('Operation Details')
                     ->schema([
-                        Forms\Components\TextInput::make('record_id')
-                            ->label('Record ID')
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->visible(fn ($record) => $record !== null),
+
 
                         Forms\Components\TextInput::make('barcode')
                             ->label('Scan Barcode Program')
@@ -248,13 +244,7 @@ class MachineOperationRecordResource extends Resource
                 Tables\Columns\ViewColumn::make('photo')
                     ->label('Foto')
                     ->view('filament.tables.columns.hover-image'),
-                Tables\Columns\TextColumn::make('record_id')
-                    ->label('Record ID')
-                    ->searchable()
-                    ->sortable()
-                    ->copyable()
-                    ->weight('bold')
-                    ->color('primary'),
+
                 Tables\Columns\TextInputColumn::make('barcode')
                     ->label('Barcode Program')
                     ->sortable()
