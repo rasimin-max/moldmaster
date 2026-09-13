@@ -359,29 +359,6 @@ class MachineOperationRecordResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\Action::make('StartJob')
-                    ->label('Mulai Job')
-                    ->icon('heroicon-o-play')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->hidden(fn (MachineOperationRecord $record) => $record->status !== 'plan_job')
-                    ->action(function (MachineOperationRecord $record) {
-                        $record->update([
-                            'status' => 'running',
-                            'start_time' => now(),
-                        ]);
-                    }),
-                Tables\Actions\Action::make('Stop')
-                    ->icon('heroicon-o-stop-circle')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->hidden(fn (MachineOperationRecord $record) => in_array($record->status, ['completed', 'plan_job']))
-                    ->action(function (MachineOperationRecord $record) {
-                        $record->update([
-                            'status' => 'completed',
-                            'end_time' => now(),
-                        ]);
-                    }),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
