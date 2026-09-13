@@ -6,13 +6,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Row;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterImport;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Str;
 
-class UsersImport implements OnEachRow, WithHeadingRow, WithEvents
+class UsersImport implements OnEachRow, WithEvents
 {
     public int $skippedCount = 0;
     public int $updatedCount = 0;
@@ -42,38 +41,31 @@ class UsersImport implements OnEachRow, WithHeadingRow, WithEvents
 
     public function onRow(Row $rowObj)
     {
-        $row = $rowObj->toArray();
+        // Get row as indexed array
+        $row = array_values($rowObj->toArray());
         
-        $email = '';
-        $name = 'Unknown User';
-        $employeeId = null;
-        $role = 'user';
+        // Check if this is a header row by looking at the second column
+        $col1 = strtolower(trim($row[1] ?? ''));
+        if ($col1 === 'id' || str_contains($col1, 'employee') || str_contains($col1, 'nik')) {
+            return; // Skip header row
+        }
+
+        // Map by indices based on user's Excel format
+        // 0: Avatar, 1: ID, 2: Name, 3: Email, 4: Role, 5: Area, 6: Aktif
+        $employeeId = trim($row[1] ?? '');
+        $name = trim($row[2] ?? '');
+        $email = trim($row[3] ?? '');
+        $role = trim($row[4] ?? '');
         $password = null;
 
-        foreach ($row as $key => $value) {
-            $keyStr = strtolower(str_replace([' ', '_', '-'], '', (string) $key));
-            $valStr = trim((string) $value);
-            
-            if (str_contains($keyStr, 'email') || str_contains($keyStr, 'mail')) {
-                if (!empty($valStr)) $email = $valStr;
-            }
-            if (str_contains($keyStr, 'name') || str_contains($keyStr, 'nama')) {
-                if (!empty($valStr)) $name = $valStr;
-            }
-            if ($keyStr === 'id' || str_contains($keyStr, 'employeeid') || str_contains($keyStr, 'nik') || str_contains($keyStr, 'idkaryawan')) {
-                if (!empty($valStr)) $employeeId = $valStr;
-            }
-            if (str_contains($keyStr, 'role') || str_contains($keyStr, 'peran') || str_contains($keyStr, 'akses')) {
-                if (!empty($valStr)) $role = $valStr;
-            }
-            if (str_contains($keyStr, 'password') || str_contains($keyStr, 'sandi') || str_contains($keyStr, 'pass')) {
-                if (!empty($valStr)) $password = $valStr;
-            }
+        if (empty($name)) {
+            $name = 'Unknown User';
         }
-        
+        if (empty($role)) {
+            $role = 'user';
+        }
+
         if (empty($email)) {
-            // Generate a random email if missing to prevent fail if it's not strictly required
-            // or just skip. The user wants to import. But email is required in the DB.
             if ($employeeId) {
                 $email = strtolower($employeeId) . '@moldmaster.id';
             } else {
