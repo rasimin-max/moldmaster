@@ -55,6 +55,7 @@ class MachineProgram extends Model
                     'status' => 'plan_job',
                     'operation_type' => 'production',
                     'planned_duration_minutes' => $time,
+                    'barcode' => $program->barcode,
                 ]
             );
         });
