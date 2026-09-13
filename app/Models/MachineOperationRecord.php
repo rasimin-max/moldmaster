@@ -29,6 +29,10 @@ class MachineOperationRecord extends Model
         'status',
         'notes',
         'photo',
+        'barcode',
+        'shift',
+        'manual_hours',
+        'manual_minutes',
     ];
 
     protected function casts(): array
@@ -45,8 +49,13 @@ class MachineOperationRecord extends Model
     protected static function booted(): void
     {
         static::saving(function (MachineOperationRecord $record) {
-            if ($record->status === 'completed' && empty($record->duration_minutes) && $record->end_time && $record->start_time) {
-                // Calculate duration in minutes if not filled manually
+            // Calculate duration from manual hours/minutes if provided
+            if ($record->manual_hours !== null || $record->manual_minutes !== null) {
+                $hours = $record->manual_hours ?? 0;
+                $minutes = $record->manual_minutes ?? 0;
+                $record->duration_minutes = ($hours * 60) + $minutes;
+            } elseif ($record->status === 'completed' && empty($record->duration_minutes) && $record->end_time && $record->start_time) {
+                // Fallback to start/end time calculation
                 $record->duration_minutes = (int) round(\Carbon\Carbon::parse($record->start_time)->diffInMinutes(\Carbon\Carbon::parse($record->end_time), true));
             }
         });

@@ -42,12 +42,11 @@ class MachineOperationRecordResource extends Resource
                     ])->columns(2),
                 Forms\Components\Section::make('Operation Details')
                     ->schema([
-                        Forms\Components\TextInput::make('scan_barcode')
+                        Forms\Components\TextInput::make('barcode')
                             ->label('Scan Barcode Program')
                             ->placeholder('Ketikan atau scan barcode di sini...')
                             ->autofocus()
                             ->live()
-                            ->dehydrated(false) // tidak disimpan ke database
                             ->afterStateUpdated(function (Forms\Set $set, $state) {
                                 if ($state) {
                                     $program = \App\Models\MachineProgram::where('barcode', $state)->first();
@@ -145,6 +144,12 @@ class MachineOperationRecordResource extends Resource
                                 ->searchable()
                                 ->preload()
                                 ->label('Operator'),
+                            Forms\Components\Select::make('shift')
+                                ->options([
+                                    'Pagi' => 'Pagi',
+                                    'Malam' => 'Malam',
+                                ])
+                                ->label('Shift'),
                             Forms\Components\Select::make('operation_type')
                                 ->options([
                                     'production' => 'Production',
@@ -209,7 +214,14 @@ class MachineOperationRecordResource extends Resource
                         Forms\Components\TextInput::make('duration_minutes')
                             ->numeric()
                             ->label('Aktual Waktu Proses (Menit)')
-                            ->helperText('Dihitung otomatis atau isi manual dalam satuan menit.'),
+                            ->helperText('Dihitung otomatis jika waktu mulai dan selesai diisi, atau jika waktu manual diisi.'),
+                        Forms\Components\TextInput::make('manual_hours')
+                            ->numeric()
+                            ->label('Manual Waktu (Jam)')
+                            ->helperText('Isi manual jika tidak menggunakan waktu mulai/selesai otomatis.'),
+                        Forms\Components\TextInput::make('manual_minutes')
+                            ->numeric()
+                            ->label('Manual Waktu (Menit)'),
                         Forms\Components\Select::make('status')
                             ->options([
                                 'plan_job' => 'Plan Job',
@@ -255,6 +267,11 @@ class MachineOperationRecordResource extends Resource
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Operator')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('shift')
+                    ->label('Shift')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
