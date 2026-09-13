@@ -65,6 +65,15 @@ class UsersImport implements OnEachRow, WithEvents
             $role = 'user';
         }
 
+        $rolesArray = [];
+        foreach (explode(',', $role) as $r) {
+            $r = strtolower(trim($r));
+            $r = str_replace(' ', '_', $r);
+            if (!empty($r)) {
+                $rolesArray[] = $r;
+            }
+        }
+
         if (empty($email)) {
             if ($employeeId) {
                 $email = strtolower($employeeId) . '@moldmaster.id';
@@ -76,7 +85,6 @@ class UsersImport implements OnEachRow, WithEvents
         $data = [
             'name' => $name,
             'employee_id' => $employeeId,
-            'role' => $role,
         ];
 
         $existing = User::where('email', $email)->first();
@@ -87,9 +95,12 @@ class UsersImport implements OnEachRow, WithEvents
                 $existing->password = Hash::make($password);
             }
 
-            if ($existing->isDirty()) {
+            if ($existing->isDirty() || count($rolesArray) > 0) {
                 try {
                     $existing->save();
+                    if (count($rolesArray) > 0) {
+                        $existing->syncRoles($rolesArray);
+                    }
                     $this->updatedCount++;
                 } catch (\Illuminate\Database\QueryException $e) {
                     if ($e->errorInfo[1] == 1062 || $e->errorInfo[0] === '23505') {
@@ -107,7 +118,10 @@ class UsersImport implements OnEachRow, WithEvents
         try {
             $data['email'] = $email;
             $data['password'] = Hash::make($password ?: 'password123');
-            User::create($data);
+            $newUser = User::create($data);
+            if (count($rolesArray) > 0) {
+                $newUser->syncRoles($rolesArray);
+            }
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->errorInfo[1] == 1062 || $e->errorInfo[0] === '23505') {
                 $this->skippedCount++;
