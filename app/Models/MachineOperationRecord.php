@@ -49,6 +49,14 @@ class MachineOperationRecord extends Model
     protected static function booted(): void
     {
         static::saving(function (MachineOperationRecord $record) {
+            // Auto-fill barcode from MachineProgram if empty
+            if (empty($record->barcode) && $record->machine_program_id) {
+                $program = \App\Models\MachineProgram::find($record->machine_program_id);
+                if ($program) {
+                    $record->barcode = $program->barcode;
+                }
+            }
+
             // Calculate duration from manual hours/minutes if provided
             if ($record->manual_hours !== null || $record->manual_minutes !== null) {
                 $hours = $record->manual_hours ?? 0;
