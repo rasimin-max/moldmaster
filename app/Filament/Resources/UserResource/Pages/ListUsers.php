@@ -33,7 +33,6 @@ class ListUsers extends ListRecords
                             \pxlrbt\FilamentExcel\Columns\Column::make('is_active')->heading('Aktif'),
                             \pxlrbt\FilamentExcel\Columns\Column::make('password')->heading('Password'),
                         ])
-                        ->withHeadings()
                 ]),
             Actions\CreateAction::make()->label('+ Tambah User'),
         ];
