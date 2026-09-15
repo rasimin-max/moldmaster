@@ -63,7 +63,7 @@ class TakeItemPage extends Page implements HasForms, HasTable
                     ->columnSpanFull(),
                 Forms\Components\Select::make('project_name')
                     ->label('Project')
-                    ->options(\App\Models\Project::pluck('name', 'name')->toArray())
+                    ->options(Mold::whereNotNull('project_name')->where('project_name', '!=', '')->distinct()->pluck('project_name', 'project_name')->toArray())
                     ->searchable()
                     ->live(),
                 Forms\Components\Select::make('mold_id')
@@ -71,10 +71,7 @@ class TakeItemPage extends Page implements HasForms, HasTable
                     ->options(function (Forms\Get $get) {
                         $query = Mold::query();
                         if ($get('project_name')) {
-                            $query->where(function ($q) use ($get) {
-                                $q->where('project_name', $get('project_name'))
-                                  ->orWhereHas('project', fn($p) => $p->where('name', $get('project_name')));
-                            });
+                            $query->where('project_name', $get('project_name'));
                         }
                         return $query->get()->mapWithKeys(fn ($m) => [$m->id => "{$m->code} - {$m->name}"])->toArray();
                     })
@@ -112,12 +109,7 @@ class TakeItemPage extends Page implements HasForms, HasTable
         }
 
         if (!empty($this->filterData['project_name'])) {
-            $query->whereHas('mold', function ($q) {
-                $q->where('project_name', $this->filterData['project_name'])
-                  ->orWhereHas('project', function ($p) {
-                      $p->where('name', $this->filterData['project_name']);
-                  });
-            });
+            $query->whereHas('mold', fn ($q) => $q->where('project_name', $this->filterData['project_name']));
         }
 
         return $query->limit(100)->get();
