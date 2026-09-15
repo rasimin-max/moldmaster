@@ -45,8 +45,8 @@
                                 <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-400 flex-shrink-0">-</div>
                             @endif
                             <div class="flex-1 min-w-0">
-                                <div class="font-medium truncate">{{ $comp->code }} — {{ $comp->name }} @if($comp->size_spec) — {{ $comp->size_spec }} @endif</div>
-                                <div class="text-sm text-gray-500">{{ $comp->category?->name }} · Stok: {{ $comp->available_stock }}</div>
+                                <div class="font-medium text-sm sm:text-base leading-tight">{{ $comp->code }} {{ $comp->name }} @if($comp->size_spec) {{ $comp->size_spec }} @endif</div>
+                                <div class="text-xs sm:text-sm text-gray-500 mt-0.5">{{ $comp->category?->name }} · Stok: {{ $comp->available_stock }}</div>
                             </div>
                         </div>
 
@@ -92,8 +92,8 @@
                     @foreach($this->cartItems as $item)
                         <div class="flex items-center gap-3 p-3">
                             <div class="flex-1">
-                                <div class="font-medium">{{ $item->code }} — {{ $item->name }} @if($item->size_spec) — {{ $item->size_spec }} @endif</div>
-                                <div class="text-sm text-gray-500">Stok tersedia: {{ $item->available_stock }}</div>
+                                <div class="font-medium text-sm sm:text-base leading-tight">{{ $item->code }} {{ $item->name }} @if($item->size_spec) {{ $item->size_spec }} @endif</div>
+                                <div class="text-xs sm:text-sm text-gray-500 mt-0.5">Stok tersedia: {{ $item->available_stock }}</div>
                             </div>
                             <button type="button" wire:click="decrementCartItem({{ $item->id }})" class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200">−</button>
                             <span class="w-8 text-center font-medium">{{ $item->cart_qty }}</span>
