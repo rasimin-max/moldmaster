@@ -63,7 +63,7 @@ class TakeItemPage extends Page implements HasForms, HasTable
                     ->columnSpanFull(),
                 Forms\Components\Select::make('project_name')
                     ->label('Project')
-                    ->options(fn () => Mold::whereNotNull('project_name')->distinct()->pluck('project_name', 'project_name'))
+                    ->options(Mold::whereNotNull('project_name')->where('project_name', '!=', '')->distinct()->pluck('project_name', 'project_name')->toArray())
                     ->searchable()
                     ->live(),
                 Forms\Components\Select::make('mold_id')
@@ -73,13 +73,13 @@ class TakeItemPage extends Page implements HasForms, HasTable
                         if ($get('project_name')) {
                             $query->where('project_name', $get('project_name'));
                         }
-                        return $query->get()->mapWithKeys(fn ($m) => [$m->id => "{$m->code} - {$m->name}"]);
+                        return $query->get()->mapWithKeys(fn ($m) => [$m->id => "{$m->code} - {$m->name}"])->toArray();
                     })
                     ->searchable()
                     ->live(),
                 Forms\Components\Select::make('category_id')
                     ->label('Kategori')
-                    ->options(ComponentCategory::pluck('name', 'id'))
+                    ->options(ComponentCategory::pluck('name', 'id')->toArray())
                     ->searchable()
                     ->live(),
             ])
