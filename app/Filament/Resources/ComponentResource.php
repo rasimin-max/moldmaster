@@ -8,6 +8,7 @@ use App\Models\ComponentCategory;
 use App\Models\MachiningType;
 use App\Models\MaterialType;
 use App\Models\Mold;
+use App\Models\Project;
 use App\Models\Vendor;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -379,6 +380,14 @@ class ComponentResource extends Resource
                     ->attribute('machining_type_id')
                     ->label('Tipe Machining')
                     ->options(MachiningType::pluck('name', 'id')),
+                Tables\Filters\SelectFilter::make('project_id')
+                    ->label('Nama Project')
+                    ->options(Project::orderBy('name')->pluck('name', 'id'))
+                    ->searchable()
+                    ->query(function (Builder $query, array $data) {
+                        if (empty($data['value'])) return;
+                        $query->whereHas('mold', fn ($q) => $q->where('project_id', $data['value']));
+                    }),
                 Tables\Filters\SelectFilter::make('mold_id')
                     ->label('Mold')
                     ->options(Mold::pluck('name', 'id')),
