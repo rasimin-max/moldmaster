@@ -15,6 +15,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Enums\FiltersLayout;
 use Illuminate\Database\Eloquent\Builder;
 
 class ComponentResource extends Resource
@@ -395,6 +396,8 @@ class ComponentResource extends Resource
                     ->label('Stok Menipis')
                     ->query(fn(Builder $query) => $query->whereColumn('stock', '<=', 'stock_minimum')),
             ])
+            ->filtersLayout(FiltersLayout::AboveContent)
+            ->filtersFormColumns(3)
             ->actions([
                 Tables\Actions\Action::make('qr')
                     ->label('QR')
