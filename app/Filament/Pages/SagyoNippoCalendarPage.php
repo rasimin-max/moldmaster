@@ -46,8 +46,12 @@ class SagyoNippoCalendarPage extends Page
         $end   = $start->copy()->endOfMonth();
         $daysInMonth = $start->daysInMonth;
 
-        // Semua user aktif dengan area
+        // Semua user aktif dengan area (kecuali super_admin, HARY S, DADAR, Rasimin master)
         $users = User::where('is_active', true)
+            ->whereNotIn('name', ['HARY S', 'DADAR', 'Rasimin master'])
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'super_admin');
+            })
             ->orderBy('area')
             ->orderBy('name')
             ->get();
