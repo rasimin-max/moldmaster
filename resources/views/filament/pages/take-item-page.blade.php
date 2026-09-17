@@ -54,7 +54,21 @@
                             }
                         @endphp
                         @if($photoUrl)
-                            <img src="{{ $photoUrl }}" class="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                            <div
+                                x-data="{ show: false }"
+                                @mouseenter="show = true"
+                                @mouseleave="show = false"
+                                class="relative flex-shrink-0"
+                            >
+                                <img src="{{ $photoUrl }}" class="w-10 h-10 rounded-full object-cover cursor-zoom-in" />
+                                <template x-if="show">
+                                    <div style="position: fixed; inset: 0; z-index: 9999; pointer-events: none; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5);">
+                                        <div style="background: white; padding: 12px; border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.4);">
+                                            <img src="{{ $photoUrl }}" style="width: 75vw; height: 75vh; object-fit: contain; border-radius: 8px;" />
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
                         @else
                             <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-400 flex-shrink-0">-</div>
                         @endif
