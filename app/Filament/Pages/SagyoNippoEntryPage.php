@@ -81,12 +81,14 @@ class SagyoNippoEntryPage extends Page implements HasForms, HasTable
                                         if ($projectId) {
                                             $query->where('project_id', $projectId);
                                         }
-                                        return $query->pluck('name', 'id');
+                                        return $query->get()->mapWithKeys(fn ($m) => [
+                                            $m->id => trim(($m->mold_number ? $m->mold_number . ' - ' : '') . $m->name)
+                                        ]);
                                     })
                                     ->label('Mold')
                                     ->required()
                                     ->searchable()
-                                    ->preload(),
+                                    ->live(false),
                                 Forms\Components\Select::make('job_code_id')
                                     ->options(\App\Models\JobCode::all()->mapWithKeys(fn ($j) => [$j->id => "{$j->code} - {$j->item}"]))
                                     ->label('Job Code')
