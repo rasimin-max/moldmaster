@@ -9,8 +9,6 @@ use Carbon\Carbon;
 
 class SagyoNippoCalendarPage extends Page
 {
-    use \BezhanSalleh\FilamentShield\Traits\HasPageShield;
-
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
     protected static ?string $navigationGroup = 'Laporan';
     protected static ?string $navigationLabel = 'Kalender Sagyo Nippo';
