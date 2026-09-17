@@ -56,7 +56,7 @@ class SagyoNippoCalendarPage extends Page
         $nippos = SagyoNippo::whereBetween('date', [$start->toDateString(), $end->toDateString()])
             ->get()
             ->groupBy(function ($n) {
-                return $n->user_id . '_' . $n->date;
+                return $n->user_id . '_' . ($n->date instanceof Carbon\Carbon ? $n->date->toDateString() : \Carbon\Carbon::parse($n->date)->toDateString());
             });
 
         // Bangun data: area => [ user => [ day => filled ] ]
