@@ -88,7 +88,7 @@ class SagyoNippoEntryPage extends Page implements HasForms, HasTable
                                     ->label('Mold')
                                     ->required()
                                     ->searchable()
-                                    ->live(false),
+                                    ->preload(),
                                 Forms\Components\Select::make('job_code_id')
                                     ->options(\App\Models\JobCode::all()->mapWithKeys(fn ($j) => [$j->id => "{$j->code} - {$j->item}"]))
                                     ->label('Job Code')
