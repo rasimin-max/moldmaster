@@ -39,11 +39,25 @@
                 @forelse($this->filteredComponents as $comp)
                     <div class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                         <div class="flex items-center gap-3 flex-1 min-w-0">
-                            @if($comp->photo)
-                                <img src="{{ Storage::url($comp->photo) }}" class="w-10 h-10 rounded-full object-cover flex-shrink-0" />
-                            @else
-                                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-400 flex-shrink-0">-</div>
-                            @endif
+                            @php
+                            $photoUrl = null;
+                            if ($comp->photo) {
+                                if (str_starts_with($comp->photo, 'http')) {
+                                    $photoUrl = $comp->photo;
+                                } else {
+                                    try {
+                                        $photoUrl = \Illuminate\Support\Facades\Storage::disk('cloudinary')->url($comp->photo);
+                                    } catch (\Exception $e) {
+                                        $photoUrl = null;
+                                    }
+                                }
+                            }
+                        @endphp
+                        @if($photoUrl)
+                            <img src="{{ $photoUrl }}" class="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                        @else
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-400 flex-shrink-0">-</div>
+                        @endif
                             <div class="flex-1 min-w-0">
                                 <div class="font-medium text-sm sm:text-base leading-tight">{{ $comp->code }} {{ $comp->name }} @if($comp->size_spec) {{ $comp->size_spec }} @endif</div>
                                 <div class="text-xs sm:text-sm text-gray-500 mt-0.5">{{ $comp->category?->name }} · Stok: {{ $comp->available_stock }}</div>
