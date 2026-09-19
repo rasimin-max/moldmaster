@@ -92,12 +92,14 @@ class SagyoNippoEntryPage extends Page implements HasForms, HasTable
                                     ->label('Job Code')
                                     ->required()
                                     ->searchable()
+                                    ->optionsLimit(500)
                                     ->preload(),
                                 Forms\Components\Select::make('part_code_id')
                                     ->options(\App\Models\PartCode::all()->mapWithKeys(fn ($p) => [$p->id => "{$p->code} - {$p->item}"]))
                                     ->label('Part Code')
                                     ->required()
                                     ->searchable()
+                                    ->optionsLimit(500)
                                     ->preload(),
                                 Forms\Components\TextInput::make('hours')
                                     ->label('Jam')
@@ -272,12 +274,14 @@ class SagyoNippoEntryPage extends Page implements HasForms, HasTable
                             ->options(\App\Models\JobCode::all()->mapWithKeys(fn ($j) => [$j->id => "{$j->code} - {$j->item}"]))
                             ->label('Job Code')
                             ->required()
-                            ->searchable(),
+                            ->searchable()
+                            ->optionsLimit(500),
                         Forms\Components\Select::make('part_code_id')
                             ->options(\App\Models\PartCode::all()->mapWithKeys(fn ($p) => [$p->id => "{$p->code} - {$p->item}"]))
                             ->label('Part Code')
                             ->required()
-                            ->searchable(),
+                            ->searchable()
+                            ->optionsLimit(500),
                         Forms\Components\TextInput::make('hours')
                             ->label('Jam')
                             ->numeric()

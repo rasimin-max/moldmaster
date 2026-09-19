@@ -76,6 +76,7 @@ class SagyoNippoResource extends Resource
                                     ->label('Job Code')
                                     ->required()
                                     ->searchable()
+                                    ->optionsLimit(500)
                                     ->preload(),
                                 Forms\Components\Select::make('part_code_id')
                                     ->relationship('partCode', 'item')
@@ -83,6 +84,7 @@ class SagyoNippoResource extends Resource
                                     ->label('Part Code')
                                     ->required()
                                     ->searchable()
+                                    ->optionsLimit(500)
                                     ->preload(),
                                 Forms\Components\TextInput::make('hours')
                                     ->label('Durasi Kerja (Jam)')
