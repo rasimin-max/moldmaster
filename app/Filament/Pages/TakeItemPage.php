@@ -38,6 +38,8 @@ class TakeItemPage extends Page implements HasForms, HasTable
     
     /** @var array<int, int> component_id => quantity */
     public array $inputQty = [];
+    
+    public string $takePurpose = 'regular';
 
     public function mount(): void
     {
@@ -210,7 +212,12 @@ class TakeItemPage extends Page implements HasForms, HasTable
                 Notification::make()->title("Stok {$component->name} tidak mencukupi, dilewati")->warning()->send();
                 continue;
             }
-            
+            if ($this->takePurpose === 'machining') {
+                $component->update(['status' => 'in_machining']);
+            } elseif ($this->takePurpose === 'assembly') {
+                $component->update(['status' => 'in_assy']);
+            }
+
             StockMovement::create([
                 'component_id' => $component->id,
                 'mold_id' => $component->mold_id,
@@ -219,6 +226,7 @@ class TakeItemPage extends Page implements HasForms, HasTable
                 'status' => 'approved',
                 'quantity' => $qty,
                 'operator_name' => auth()->user()->name ?? 'Operator',
+                'purpose' => $this->takePurpose === 'regular' ? null : ($this->takePurpose === 'machining' ? 'Ambil untuk Machining' : 'Ambil untuk Assembly'),
                 'approved_by' => auth()->id(),
                 'approved_at' => now(),
             ]);

@@ -131,6 +131,15 @@
                     @endforeach
                 </div>
 
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tujuan Pengambilan</label>
+                    <select wire:model="takePurpose" class="w-full rounded-lg border-gray-300 dark:bg-gray-800 dark:border-gray-700 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                        <option value="regular">Pengambilan Biasa (Hanya potong stok)</option>
+                        <option value="machining">Ambil untuk Machining (Ubah status ke Proses Machining)</option>
+                        <option value="assembly">Ambil untuk Assembly (Ubah status ke Proses Assembly)</option>
+                    </select>
+                </div>
+
                 <x-filament::button color="primary" wire:click="confirmCart" class="w-full">
                     Konfirmasi Ambil Semua Barang
                 </x-filament::button>
