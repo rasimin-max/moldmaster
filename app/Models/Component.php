@@ -104,6 +104,9 @@ class Component extends Model
             'pending_arrival' => 'info',
             'maintenance' => 'danger',
             'retired' => 'gray',
+            'in_machining' => 'warning',
+            'ready_for_assy' => 'success',
+            'in_assy' => 'info',
             default => 'gray',
         };
     }
@@ -116,6 +119,9 @@ class Component extends Model
             'pending_arrival' => 'Belum Datang',
             'maintenance' => 'Maintenance',
             'retired' => 'Pensiunkan',
+            'in_machining' => 'Proses Machining',
+            'ready_for_assy' => 'Siap untuk Assy',
+            'in_assy' => 'Proses Assembly',
             default => ucfirst($this->status),
         };
     }

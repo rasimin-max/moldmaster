@@ -107,6 +107,9 @@ class ComponentResource extends Resource
                                 'pending_arrival' => 'Belum Datang',
                                 'maintenance' => 'Maintenance',
                                 'retired' => 'Pensiunkan',
+                                'in_machining' => 'Proses Machining',
+                                'ready_for_assy' => 'Siap untuk Assy',
+                                'in_assy' => 'Proses Assembly',
                             ])
                             ->required()
                             ->default('ready'),
@@ -300,6 +303,7 @@ class ComponentResource extends Resource
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->getStateUsing(function($record) {
+                        if (in_array($record->status, ['in_machining', 'ready_for_assy', 'in_assy'])) return $record->status;
                         if (!$record->mold_id || !$record->required_qty) return $record->status;
                         
                         $req = $record->required_qty;
@@ -323,12 +327,15 @@ class ComponentResource extends Resource
                         'pending_arrival' => 'Belum Datang',
                         'maintenance' => 'Maintenance',
                         'retired' => 'Pensiunkan',
+                        'in_machining' => 'Proses Machining',
+                        'ready_for_assy' => 'Siap untuk Assy',
+                        'in_assy' => 'Proses Assembly',
                         default => ucfirst($state),
                     })
                     ->colors([
-                        'success' => ['complete', 'ready'], 
-                        'warning' => ['on_progress', 'in_use'], 
-                        'info' => ['proses_dipakai', 'pending_arrival'], 
+                        'success' => ['complete', 'ready', 'ready_for_assy'], 
+                        'warning' => ['on_progress', 'in_use', 'in_machining'], 
+                        'info' => ['proses_dipakai', 'pending_arrival', 'in_assy'], 
                         'danger' => ['waiting', 'maintenance'],
                         'gray' => ['retired'],
                     ]),
@@ -347,6 +354,9 @@ class ComponentResource extends Resource
                         'ready' => 'Ready',
                         'on_progress' => 'On Progress',
                         'waiting' => 'Waiting',
+                        'in_machining' => 'Proses Machining',
+                        'ready_for_assy' => 'Siap untuk Assy',
+                        'in_assy' => 'Proses Assembly',
                     ])
                     ->query(function (Builder $query, array $data) {
                         if (empty($data['value'])) return;
@@ -399,6 +409,27 @@ class ComponentResource extends Resource
             ->filtersLayout(FiltersLayout::AboveContent)
             ->filtersFormColumns(3)
             ->actions([
+                Tables\Actions\Action::make('startMachining')
+                    ->label('Mulai Machining')
+                    ->icon('heroicon-o-play')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->visible(fn(Component $record) => !in_array($record->status, ['in_machining', 'ready_for_assy', 'in_assy', 'retired']))
+                    ->action(fn (Component $record) => $record->update(['status' => 'in_machining'])),
+                Tables\Actions\Action::make('finishMachining')
+                    ->label('Selesai Machining')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn(Component $record) => $record->status === 'in_machining')
+                    ->action(fn (Component $record) => $record->update(['status' => 'ready_for_assy'])),
+                Tables\Actions\Action::make('receiveForAssy')
+                    ->label('Ambil untuk Assy')
+                    ->icon('heroicon-o-inbox-arrow-down')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->visible(fn(Component $record) => $record->status === 'ready_for_assy')
+                    ->action(fn (Component $record) => $record->update(['status' => 'in_assy'])),
                 Tables\Actions\Action::make('qr')
                     ->label('QR')
                     ->icon('heroicon-o-qr-code')
