@@ -32,6 +32,11 @@ class RequestPartToolPage extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.pages.request-part-tool-page';
 
+    public static function canAccess(): bool
+    {
+        return auth()->check() && !auth()->user()->hasRole('viewer');
+    }
+
     public ?array $data = [];
 
     public function mount(): void

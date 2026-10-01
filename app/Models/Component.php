@@ -16,7 +16,7 @@ class Component extends Model
 
     protected $fillable = [
         'code', 'qr_code', 'name', 'category_id', 'material_type_id', 'machining_type_id',
-        'mold_id', 'vendor_id',
+        'mold_id', 'vendor_id', 'budget_category',
         'material', 'size_spec', 'rack_location', 'stock', 'required_qty', 'stock_minimum',
         'stock_reserved', 'unit_price', 'unit', 'shot_count', 'shot_life',
         'photo', 'qr_image', 'status', 'description', 'heat_treatment', 'remarks',

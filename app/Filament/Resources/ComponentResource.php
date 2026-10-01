@@ -55,6 +55,13 @@ class ComponentResource extends Resource
                             ->createOptionForm([
                                 Forms\Components\TextInput::make('name')->required(),
                             ]),
+                        Forms\Components\Select::make('budget_category')
+                            ->label('Budget Category')
+                            ->options([
+                                'komponen part' => 'Komponen Part',
+                                'material' => 'Material',
+                            ])
+                            ->nullable(),
                     ])->columns(2),
 
                     Forms\Components\Section::make('Spesifikasi & Detail')->schema([
@@ -233,6 +240,19 @@ class ComponentResource extends Resource
                 Tables\Columns\TextColumn::make('machiningType.name')
                     ->label('Machining')
                     ->sortable(),
+                Tables\Columns\BadgeColumn::make('budget_category')
+                    ->label('Budget Kategori')
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => match($state) {
+                        'komponen part' => 'Komponen Part',
+                        'material' => 'Material',
+                        default => $state,
+                    })
+                    ->color(fn ($state) => match($state) {
+                        'komponen part' => 'info',
+                        'material' => 'warning',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('mold_project')
                     ->label('Nama Project')
                     ->getStateUsing(fn($record) => $record->mold?->project?->name ?? $record->mold?->project_name ?? '-')
