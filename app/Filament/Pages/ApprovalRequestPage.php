@@ -50,6 +50,7 @@ class ApprovalRequestPage extends Page implements HasForms, HasTable
                     ->label('Foto Item')
                     ->circular()
                     ->stacked()
+                    ->disk('cloudinary')
                     ->extraImgAttributes(['class' => 'zoomable-image']),
                 Tables\Columns\TextColumn::make('items.specifications')
                     ->label('Detail Request')

@@ -68,6 +68,7 @@ class RequestPartToolPage extends Page implements HasForms, HasTable
                 \Filament\Forms\Components\FileUpload::make('photo')
                     ->label('Foto Referensi (Opsional)')
                     ->image()
+                    ->disk('cloudinary')
                     ->directory('po_requests'),
             ])
             ->statePath('data');
@@ -115,6 +116,11 @@ class RequestPartToolPage extends Page implements HasForms, HasTable
             'description' => $data['description'],
         ]);
 
+        $photoPath = null;
+        if (!empty($data['photo'])) {
+            $photoPath = is_array($data['photo']) ? array_values($data['photo'])[0] : $data['photo'];
+        }
+
         PoItem::create([
             'purchase_order_id' => $po->id,
             'component_id' => $component->id,
@@ -122,7 +128,7 @@ class RequestPartToolPage extends Page implements HasForms, HasTable
             'qty_ordered' => $data['quantity'],
             'unit_price' => 0,
             'subtotal' => 0,
-            'photo' => $data['photo'] ?? null,
+            'photo' => $photoPath,
         ]);
 
         Notification::make()->title('Berhasil mengajukan request!')->success()->send();
@@ -149,6 +155,7 @@ class RequestPartToolPage extends Page implements HasForms, HasTable
                     ->label('Foto Item')
                     ->circular()
                     ->stacked()
+                    ->disk('cloudinary')
                     ->extraImgAttributes(['class' => 'zoomable-image']),
                 Tables\Columns\TextColumn::make('po_number')
                     ->label('Nomor Request')
