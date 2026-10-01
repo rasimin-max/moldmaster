@@ -18,13 +18,25 @@ Route::get('/run-migrations-system', function () {
 
 Route::get('/fix-db', function() {
     try {
-        if (!\Illuminate\Support\Facades\Schema::hasColumn('maintenances', 'pic_name')) {
-            \Illuminate\Support\Facades\Schema::table('maintenances', function (\Illuminate\Database\Schema\Blueprint $table) {
+        \Illuminate\Support\Facades\Schema::table('maintenances', function (\Illuminate\Database\Schema\Blueprint $table) {
+            if (!\Illuminate\Support\Facades\Schema::hasColumn('maintenances', 'pic_name')) {
                 $table->string('pic_name')->nullable();
-            });
-            return "SUKSES! Kolom pic_name berhasil ditambahkan ke database (PostgreSQL)! Silakan tes websitenya.";
-        }
-        return "Kolom pic_name sudah ada di database ini. Silakan tes websitenya.";
+            }
+            if (!\Illuminate\Support\Facades\Schema::hasColumn('maintenances', 'temporary_action')) {
+                $table->text('temporary_action')->nullable();
+                $table->string('rca_man')->nullable();
+                $table->string('rca_machine')->nullable();
+                $table->string('rca_material')->nullable();
+                $table->string('rca_method')->nullable();
+                $table->text('permanent_countermeasure')->nullable();
+                $table->text('replaced_parts_note')->nullable();
+                $table->foreignId('verified_by')->nullable()->constrained('users')->nullOnDelete();
+                $table->timestamp('verified_at')->nullable();
+                $table->string('photo_after')->nullable();
+                $table->dateTime('target_due_date')->nullable();
+            }
+        });
+        return "SUKSES! Semua kolom (termasuk target_due_date dan pic_name) berhasil disinkronkan ke PostgreSQL! Silakan tes websitenya.";
     } catch (\Exception $e) {
         return "Error: " . $e->getMessage();
     }
