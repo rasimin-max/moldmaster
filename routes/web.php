@@ -36,7 +36,11 @@ Route::get('/fix-db', function() {
                 $table->dateTime('target_due_date')->nullable();
             }
         });
-        return "SUKSES! Semua kolom (termasuk target_due_date dan pic_name) berhasil disinkronkan ke PostgreSQL! Silakan tes websitenya.";
+
+        // Drop the check constraint if it exists so we can use new status values like 'need_verification' and 'closed'
+        \Illuminate\Support\Facades\DB::statement('ALTER TABLE maintenances DROP CONSTRAINT IF EXISTS maintenances_status_check');
+
+        return "SUKSES! Semua kolom berhasil disinkronkan dan batasan status telah dihapus ke PostgreSQL! Silakan tes websitenya.";
     } catch (\Exception $e) {
         return "Error: " . $e->getMessage();
     }
