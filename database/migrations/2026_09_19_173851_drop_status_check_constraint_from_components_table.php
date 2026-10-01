@@ -12,7 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement('ALTER TABLE components DROP CONSTRAINT IF EXISTS components_status_check');
+        try {
+            DB::statement('ALTER TABLE components DROP CONSTRAINT components_status_check');
+        } catch (\Exception $e) {
+            // Constraint might not exist, ignore
+        }
     }
 
     /**
