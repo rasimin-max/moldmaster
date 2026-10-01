@@ -16,6 +16,20 @@ Route::get('/run-migrations-system', function () {
     }
 });
 
+Route::get('/fix-db', function() {
+    try {
+        if (!\Illuminate\Support\Facades\Schema::hasColumn('maintenances', 'pic_name')) {
+            \Illuminate\Support\Facades\Schema::table('maintenances', function (\Illuminate\Database\Schema\Blueprint $table) {
+                $table->string('pic_name')->nullable();
+            });
+            return "SUKSES! Kolom pic_name berhasil ditambahkan ke database (PostgreSQL)! Silakan tes websitenya.";
+        }
+        return "Kolom pic_name sudah ada di database ini. Silakan tes websitenya.";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+});
+
 Route::get('/force-drop-constraint', function () {
     try {
         \Illuminate\Support\Facades\DB::statement('ALTER TABLE machines DROP CONSTRAINT IF EXISTS machines_type_check');
