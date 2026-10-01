@@ -37,10 +37,18 @@ Route::get('/fix-db', function() {
             }
         });
 
+        // Add budget_category to components if missing
+        \Illuminate\Support\Facades\Schema::table('components', function (\Illuminate\Database\Schema\Blueprint $table) {
+            if (!\Illuminate\Support\Facades\Schema::hasColumn('components', 'budget_category')) {
+                $table->string('budget_category')->nullable();
+            }
+        });
+
         // Drop the check constraint if it exists so we can use new status values like 'need_verification' and 'closed'
         \Illuminate\Support\Facades\DB::statement('ALTER TABLE maintenances DROP CONSTRAINT IF EXISTS maintenances_status_check');
+        \Illuminate\Support\Facades\DB::statement('ALTER TABLE components DROP CONSTRAINT IF EXISTS components_status_check');
 
-        return "SUKSES! Semua kolom berhasil disinkronkan dan batasan status telah dihapus ke PostgreSQL! Silakan tes websitenya.";
+        return "SUKSES! Semua kolom untuk Maintenances dan Components berhasil disinkronkan ke PostgreSQL! Silakan tes websitenya.";
     } catch (\Exception $e) {
         return "Error: " . $e->getMessage();
     }
