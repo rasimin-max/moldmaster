@@ -49,7 +49,7 @@ class ApprovalRequestPage extends Page implements HasForms, HasTable
                 Tables\Columns\ImageColumn::make('items.photo')
                     ->label('Foto Item')
                     ->circular()
-                    ->defaultImageUrl(url('/images/default-image.png'))
+                    ->stacked()
                     ->extraImgAttributes(['class' => 'zoomable-image']),
                 Tables\Columns\TextColumn::make('items.specifications')
                     ->label('Detail Request')
