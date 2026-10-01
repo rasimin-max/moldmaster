@@ -46,10 +46,13 @@ class ApprovalRequestPage extends Page implements HasForms, HasTable
                     ->searchable(),
                 Tables\Columns\TextColumn::make('creator.name')
                     ->label('Pemohon'),
-                Tables\Columns\ImageColumn::make('items.photo')
+                Tables\Columns\ImageColumn::make('item_photo')
                     ->label('Foto Item')
+                    ->getStateUsing(function ($record) {
+                        $firstItem = $record->items->first();
+                        return $firstItem ? $firstItem->photo : null;
+                    })
                     ->circular()
-                    ->stacked()
                     ->disk('cloudinary')
                     ->extraImgAttributes(['class' => 'zoomable-image']),
                 Tables\Columns\TextColumn::make('items.specifications')
