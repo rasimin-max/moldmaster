@@ -18,6 +18,9 @@ class Maintenance extends Model
         'reported_at', 'approved_at', 'started_at', 'completed_at',
         'downtime_hours', 'labor_cost', 'spare_parts_cost', 'total_cost',
         'rejection_reason', 'notes',
+        'temporary_action', 'rca_man', 'rca_machine', 'rca_material', 'rca_method',
+        'permanent_countermeasure', 'replaced_parts_note', 'verified_by', 'verified_at',
+        'photo_after', 'target_due_date'
     ];
 
     protected function casts(): array
@@ -27,6 +30,8 @@ class Maintenance extends Model
             'approved_at' => 'datetime',
             'started_at' => 'datetime',
             'completed_at' => 'datetime',
+            'verified_at' => 'datetime',
+            'target_due_date' => 'datetime',
             'downtime_hours' => 'decimal:2',
             'labor_cost' => 'decimal:2',
             'spare_parts_cost' => 'decimal:2',
@@ -79,6 +84,11 @@ class Maintenance extends Model
         return $this->belongsTo(User::class, 'technician_id');
     }
 
+    public function verifier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'verified_by');
+    }
+
     public function spareParts(): HasMany
     {
         return $this->hasMany(MaintenanceSparePart::class);
@@ -101,7 +111,9 @@ class Maintenance extends Model
             'pending' => 'warning',
             'approved' => 'info',
             'in_progress' => 'primary',
+            'need_verification' => 'warning',
             'completed' => 'success',
+            'closed' => 'success',
             'rejected' => 'danger',
             'cancelled' => 'gray',
             default => 'gray',
