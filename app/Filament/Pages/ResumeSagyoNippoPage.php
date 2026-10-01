@@ -126,6 +126,7 @@ class ResumeSagyoNippoPage extends Page implements HasTable
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                    ->visible(fn ($record) => $record->sagyoNippo?->user_id === auth()->id())
                     ->form([
                         Forms\Components\Select::make('type')
                             ->options(\App\Models\SagyoType::pluck('name', 'id'))
@@ -163,7 +164,8 @@ class ResumeSagyoNippoPage extends Page implements HasTable
                             ->label('Catatan')
                             ->rows(2),
                     ]),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn ($record) => $record->sagyoNippo?->user_id === auth()->id()),
             ])
             ->headerActions([
                 \pxlrbt\FilamentExcel\Actions\Tables\ExportAction::make()->exports([
