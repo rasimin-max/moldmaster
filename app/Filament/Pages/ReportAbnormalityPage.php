@@ -34,6 +34,11 @@ class ReportAbnormalityPage extends Page implements HasForms, HasTable
 
     public ?array $data = [];
 
+    public static function canAccess(): bool
+    {
+        return auth()->check() && !auth()->user()->hasRole('viewer');
+    }
+
     public function mount(): void
     {
         $this->form->fill();
