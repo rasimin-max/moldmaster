@@ -9,7 +9,7 @@
         @if($record->started_at)
         <div>
             <p class="text-sm text-gray-500">Diproses pada: {{ $record->started_at->format('d M Y H:i') }}</p>
-            <p class="font-medium">Status: <span class="text-primary-600">In Progress</span> oleh {{ $record->technician?->name ?? '-' }}</p>
+            <p class="font-medium">Status: <span class="text-primary-600">In Progress</span> oleh {{ $record->pic_name ?? '-' }}</p>
             @if($record->target_due_date)
             <p class="text-sm text-gray-500">Target Selesai: {{ $record->target_due_date->format('d M Y H:i') }}</p>
             @endif

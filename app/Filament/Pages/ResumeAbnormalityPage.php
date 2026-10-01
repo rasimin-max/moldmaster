@@ -79,7 +79,7 @@ class ResumeAbnormalityPage extends Page implements HasTable
                     ->label('Status')
                     ->badge()
                     ->color(fn ($record) => $record->status_badge_color ?? 'gray'),
-                Tables\Columns\TextColumn::make('technician.name')
+                Tables\Columns\TextColumn::make('pic_name')
                     ->label('PIC Penanganan')
                     ->searchable()
                     ->sortable()
@@ -149,18 +149,17 @@ class ResumeAbnormalityPage extends Page implements HasTable
                         ->color('info')
                         ->visible(fn (Maintenance $record) => in_array($record->status, ['pending', 'approved']))
                         ->form([
-                            Forms\Components\Select::make('technician_id')
-                                ->label('Pilih Teknisi / PIC')
-                                ->relationship('technician', 'name')
-                                ->searchable()
-                                ->required(),
+                            Forms\Components\TextInput::make('pic_name')
+                                ->label('Nama Teknisi / PIC')
+                                ->required()
+                                ->maxLength(255),
                             Forms\Components\DateTimePicker::make('target_due_date')
                                 ->label('Target Selesai / ETA')
                                 ->required(),
                         ])
                         ->action(function (array $data, Maintenance $record): void {
                             $record->update([
-                                'technician_id' => $data['technician_id'],
+                                'pic_name' => $data['pic_name'],
                                 'target_due_date' => $data['target_due_date'],
                                 'status' => 'in_progress',
                                 'started_at' => now(),
@@ -172,7 +171,7 @@ class ResumeAbnormalityPage extends Page implements HasTable
                         ->label('Isi Countermeasure')
                         ->icon('heroicon-o-wrench-screwdriver')
                         ->color('primary')
-                        ->visible(fn (Maintenance $record) => $record->status === 'in_progress' && (auth()->user()->id === $record->technician_id || auth()->user()->hasAnyRole(['admin', 'super_admin', 'leader'])))
+                        ->visible(fn (Maintenance $record) => $record->status === 'in_progress')
                         ->form([
                             Forms\Components\Section::make('Action Plan')
                                 ->schema([

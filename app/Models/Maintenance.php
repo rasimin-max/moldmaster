@@ -20,7 +20,7 @@ class Maintenance extends Model
         'rejection_reason', 'notes',
         'temporary_action', 'rca_man', 'rca_machine', 'rca_material', 'rca_method',
         'permanent_countermeasure', 'replaced_parts_note', 'verified_by', 'verified_at',
-        'photo_after', 'target_due_date'
+        'photo_after', 'target_due_date', 'pic_name'
     ];
 
     protected function casts(): array
