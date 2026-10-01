@@ -145,6 +145,11 @@ class RequestPartToolPage extends Page implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('creator.name')
                     ->label('Requester')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('items.photo')
+                    ->label('Foto Item')
+                    ->circular()
+                    ->stacked()
+                    ->extraImgAttributes(['class' => 'zoomable-image']),
                 Tables\Columns\TextColumn::make('po_number')
                     ->label('Nomor Request')
                     ->searchable(),
