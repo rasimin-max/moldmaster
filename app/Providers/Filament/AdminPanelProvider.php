@@ -50,6 +50,10 @@ class AdminPanelProvider extends PanelProvider
                     .fi-sidebar-item-active .fi-sidebar-item-icon { 
                         color: #000000 !important; 
                     }
+                    
+                    /* Zoomable Image Hover Effect */
+                    .zoomable-image { transition: all 0.3s ease-in-out; cursor: zoom-in; position: relative; z-index: 1; }
+                    .zoomable-image:hover { transform: scale(8); z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 8px; }
                 </style>'
             )
             ->navigationGroups([
