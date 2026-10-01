@@ -67,6 +67,7 @@ class ReportAbnormalityPage extends Page implements HasForms, HasTable
                 \Filament\Forms\Components\FileUpload::make('photo')
                     ->label('Foto Abnormality (Opsional)')
                     ->image()
+                    ->disk('cloudinary')
                     ->directory('maintenances'),
                 DatePicker::make('maintenance_date')
                     ->label('Tanggal Kejadian / Laporan')
@@ -90,6 +91,11 @@ class ReportAbnormalityPage extends Page implements HasForms, HasTable
     {
         $data = $this->form->getState();
 
+        $photoPath = null;
+        if (!empty($data['photo'])) {
+            $photoPath = is_array($data['photo']) ? array_values($data['photo'])[0] : $data['photo'];
+        }
+
         Maintenance::create([
             'machine_id' => $data['machine_id'],
             'reported_by' => auth()->id(),
@@ -97,7 +103,7 @@ class ReportAbnormalityPage extends Page implements HasForms, HasTable
             'status' => 'pending', // usually reported/pending
             'reported_at' => $data['maintenance_date'],
             'problem_description' => "Judul: {$data['problem_title']}\nDeskripsi: {$data['description']}",
-            'photo' => $data['photo'] ?? null,
+            'photo' => $photoPath,
             'priority' => 'medium',
         ]);
 
@@ -122,6 +128,11 @@ class ReportAbnormalityPage extends Page implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('reporter.name')
                     ->label('Pelapor')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('photo')
+                    ->label('Foto')
+                    ->circular()
+                    ->disk('cloudinary')
+                    ->extraImgAttributes(['class' => 'zoomable-image']),
                 Tables\Columns\TextColumn::make('machine.name')
                     ->label('Mesin / Asset')
                     ->searchable()
