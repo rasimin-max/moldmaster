@@ -46,6 +46,11 @@ class ApprovalRequestPage extends Page implements HasForms, HasTable
                     ->searchable(),
                 Tables\Columns\TextColumn::make('creator.name')
                     ->label('Pemohon'),
+                Tables\Columns\ImageColumn::make('items.photo')
+                    ->label('Foto Item')
+                    ->circular()
+                    ->defaultImageUrl(url('/images/default-image.png'))
+                    ->extraImgAttributes(['class' => 'zoomable-image']),
                 Tables\Columns\TextColumn::make('items.specifications')
                     ->label('Detail Request')
                     ->limit(50),
